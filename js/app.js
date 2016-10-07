@@ -1,8 +1,21 @@
 var game = game || {};
 
 game = {
+  generateGrid: function(){
+    var colors = ["yellow","blue","red"];
+    var numCells = 9; // future proofing for level change
+    this.grid =[];
+    var choice = "";
+
+    for (var i=0;i<numCells;i++){
+      var randCol = [Math.floor(Math.random() * colors.length)];
+      choice = colors[randCol];
+      this.grid.push(colors[randCol]);
+    }
+  },
   init: function() {
-    this.grid = ["yellow","blue","yellow","red","yellow","red","blue","red","blue"];
+    this.generateGrid();
+
     var $ul = $('ul');
     this.clickCounter = 0;
     this.a = ""; // id of 1st selected cell
@@ -22,6 +35,7 @@ game = {
     this.col2Win = false;
     this.col3Win = false;
 
+
     $.each(this.grid, function(i, cellClass){
       $ul.append("<li id='"+ i +"' class='"+ cellClass +"'></li>");
     });
@@ -32,6 +46,8 @@ game = {
       this.cellIndex = parseFloat(this.id);
       game.updateClickCounter(this);
     });
+
+    this.checkRowsForWin();
   },
   // setVisualGrid: function(){
   //   this.grid = this.grid;
@@ -121,7 +137,6 @@ game = {
           paircount++;
         } else {
           paircount=0;
-
         }
 
         // IF there is a match, run function to add new row
@@ -134,7 +149,7 @@ game = {
         }
       }
     });
-     // Add new row at start of array
+    // Add new row at start of array
     if (match) {self.grid.splice(0,0,'new1','new2','new2');}
     setTimeout(self.updateGrid.bind(self),1000);
 
@@ -153,7 +168,6 @@ game = {
   },
   updateGrid: function(){
     var self = this;
-    // var $gridCopy = this.grid;
     $.each($('li'), function(i, li){
       console.log(li, self.grid[i]);
       $(li).removeClass("red blue yellow").addClass(self.grid[i]);
