@@ -22,3 +22,6 @@ ul li {
 .yellow {
   background-color: yellow;
 }
+.selected {
+  border: 5px solid black;
+}

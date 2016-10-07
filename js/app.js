@@ -1,9 +1,8 @@
-var $game = $game || {};
+var game = game || {};
 
-$game = {
+game = {
   init: function() {
-    var $grid = ["yellow","blue","yellow","red","blue","red","blue","red","blue"];
-    this.gridCopy = $grid;
+    this.grid = ["yellow","blue","yellow","red","yellow","red","blue","red","blue"];
     var $ul = $('ul');
     this.clickCounter = 0;
     this.a = ""; // id of 1st selected cell
@@ -13,24 +12,30 @@ $game = {
     this.aClass = "";  // class of 1st selected cell
     this.bClass = "";
     this.tempClass = "";
+    this.row1 = this.grid.slice(0,3);
+    this.row2 = this.grid.slice(3,6);
+    this.row3 = this.grid.slice(6,9);
     this.row1Win = false;
     this.row2Win = false;
     this.row3Win = false;
     this.col1Win = false;
     this.col2Win = false;
     this.col3Win = false;
-    $.each($grid, function(i, cellClass){
+
+    $.each(this.grid, function(i, cellClass){
       $ul.append("<li id='"+ i +"' class='"+ cellClass +"'></li>");
     });
+
     //   add click listener
     $('li').on('click', function(){
+      // $(this).addClass('selected'); // messes up the currentClass
       this.cellIndex = parseFloat(this.id);
-      $game.updateClickCounter(this);
+      game.updateClickCounter(this);
     });
   },
-  setVisualGrid: function(){
-    this.grid = ["yellow","blue","yellow","red","blue","red","blue","red","blue"];
-  },
+  // setVisualGrid: function(){
+  //   this.grid = this.grid;
+  // },
   updateClickCounter: function(e){
     // this.cellClicked = e.target;
     this.currentClass = e.className;
@@ -64,38 +69,99 @@ $game = {
     this.updateGridArray();
   },
   updateGridArray: function (){
-    this.gridCopy.splice(this.aIndex,1,this.bClass);
-    this.gridCopy.splice(this.bIndex,1,this.aClass);
-    this.checkForWin();
+    this.grid.splice(this.aIndex,1,this.bClass);
+    this.grid.splice(this.bIndex,1,this.aClass);
+    this.row1 = this.grid.slice(0,3);
+    this.row2 = this.grid.slice(3,6);
+    this.row3 = this.grid.slice(6,9);
+    this.checkRowsForWin();
   },
-  checkForWin: function() {
-      console.log(this.gridCopy);
-      // check rows
-      if (this.gridCopy[0] === this.gridCopy[1] && this.gridCopy[0] === this.gridCopy[2] ){
-        this.row1Win = true;
-      } else if (this.gridCopy[3] === this.gridCopy[4] && this.gridCopy[3] === this.gridCopy[5] ){
-        this.row2Win = true;
-      } else if (this.gridCopy[6] === this.gridCopy[7] && this.gridCopy[6] === this.gridCopy[8] ){
-        this.row3Win = true;
-      }
+  checkRowsForWin: function() {
 
-      // if not, check cols
-      else if (this.gridCopy[0] === this.gridCopy[3] && this.gridCopy[0] === this.gridCopy[6] ){
-        this.col1Win = true;
-      } else if (this.gridCopy[1] === this.gridCopy[4] && this.gridCopy[1] === this.gridCopy[7] ){
-        this.col2Win = true;
-      } else if (this.gridCopy[2] === this.gridCopy[5] && this.gridCopy[2] === this.gridCopy[8] ){
-        this.col3Win = true;
-      }
+    // ----------- START: WORKING "WET" LOGIC ----------------
+    // var winningRows = [];
+    // // console.log(this.row1 + this.row2 + this.row3);
+    // if (this.row1[1] === this.row1[0] && this.row1[1] === this.row1[2]){
+    //   winningRows.push(1);
+    //   // console.log(winningRows);
+    // }
+    // if (this.row2[1] === this.row2[0] && this.row2[1] === this.row2[2]){
+    //   winningRows.push(2);
+    //   // console.log(winningRows);
+    // }
+    // if (this.row3[1] === this.row3[0] && this.row3[1] === this.row3[2]){
+    //   winningRows.push(3);
+    //   // console.log(winningRows);
+    // }
+    //
+    // if (winningRows){
+    //   this.grid.splice(3,3);
+    //   this.grid.splice(0,0,"new0","new1","new2");
+    //
+    //   // update grid
+    //   setTimeout(this.updateGrid.bind(this),1000);
+    // }
+    // ----------- END: WORKING "WET" LOGIC ----------------
 
-      // check if any winning cols or rows
-      if (this.col1Win || this.col2Win || this.col3Win || this.row1Win || this.row2Win || this.row3Win){
-        console.log("We have a winner!");
+
+    // ----------- START: WORKING "DRY" LOGIC ----------------
+    this.grid = []; // empty grid ready to re-build
+    var numRows = 3;
+    var numCols =2;
+    var rowsToCheck = [this.row1,this.row2,this.row3];
+    var paircount = 0;
+    var self = this;
+    var match = false;
+
+    rowsToCheck.forEach(function(currentRow, i){
+      paircount = 0;
+      // Check cols
+      for (var i = 0; i < numCols; i++){
+        if (currentRow[i] === currentRow[i+1]){
+          paircount++;
+        } else {
+          paircount=0;
+
+        }
+
+        // IF there is a match, run function to add new row
+        if (paircount === 2){
+          console.log("Append new row");
+          match = true;
+          // self.reBuildGrid();
+        } else if (paircount === 0 && i >=1 || paircount === 1 && i >=1){
+          self.grid.push(currentRow[0],currentRow[1],currentRow[2]);
+        }
       }
+    });
+     // Add new row at start of array
+    if (match) {self.grid.splice(0,0,'new1','new2','new2');}
+    setTimeout(self.updateGrid.bind(self),1000);
+
+    // ----------- END: WORKING "DRY" LOGIC ----------------
+  },
+  checlColsForWin: function(){
+
+    // // if not, check cols
+    // else if (this.grid[0] === this.grid[3] && this.grid[0] === this.grid[6] ){
+    //   this.col1Win = true;
+    // } else if (this.grid[1] === this.grid[4] && this.grid[1] === this.grid[7] ){
+    //   this.col2Win = true;
+    // } else if (this.grid[2] === this.grid[5] && this.grid[2] === this.grid[8] ){
+    //   this.col3Win = true;
+    // }
+  },
+  updateGrid: function(){
+    var self = this;
+    // var $gridCopy = this.grid;
+    $.each($('li'), function(i, li){
+      console.log(li, self.grid[i]);
+      $(li).removeClass("red blue yellow").addClass(self.grid[i]);
+    });
   }
 };
 
 
 $(function(){
-  $game.init();
+  game.init();
 });
