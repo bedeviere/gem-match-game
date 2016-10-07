@@ -121,6 +121,9 @@ game = {
 
 
     // ----------- START: WORKING "DRY" LOGIC ----------------
+    this.row1 = this.grid.slice(0,3); // for use when re-running check
+    this.row2 = this.grid.slice(3,6);
+    this.row3 = this.grid.slice(6,9);
     this.grid = []; // empty grid ready to re-build
     var numRows = 3;
     var numCols =2;
@@ -132,6 +135,7 @@ game = {
     this.newRow = [];
     var colors = ["yellow","blue","red"];
     var choice = "";
+    game.reCheck = false;
 
     rowsToCheck.forEach(function(currentRow, i){
       paircount = 0;
@@ -146,6 +150,7 @@ game = {
         // IF there is a match, run function to add new row
         if (paircount === 2){
           match = true;
+          game.reCheck = true;
 
           // generate new row
           cellsToFill = cellsToFill + 3;
@@ -179,7 +184,8 @@ game = {
         self.grid.splice(0,0,self.a,self.b,self.c);
       }
     }
-    console.log(self.grid);
+    console.log(game.reCheck);
+    // console.log(self.grid);
     setTimeout(self.updateGrid.bind(self),1000);
 
     // ----------- END: WORKING "DRY" LOGIC ----------------
@@ -197,13 +203,16 @@ game = {
   },
   updateGrid: function(){
     var self = this;
+
     $.each($('li'), function(i, li){
       // console.log(li, self.grid[i]);
       $(li).removeClass("red blue yellow").addClass(self.grid[i]);
     });
 
     // if new grid doesn't match original grid, check again for match
-    // this.checkRowsForWin();
+    if (game.reCheck === true) {
+      this.checkRowsForWin();
+    };
   }
 };
 
