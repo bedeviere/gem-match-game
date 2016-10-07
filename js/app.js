@@ -128,6 +128,10 @@ game = {
     var paircount = 0;
     var self = this;
     var match = false;
+    var cellsToFill = 0;
+    this.newRow = [];
+    var colors = ["yellow","blue","red"];
+    var choice = "";
 
     rowsToCheck.forEach(function(currentRow, i){
       paircount = 0;
@@ -144,20 +148,7 @@ game = {
           match = true;
 
           // generate new row
-          this.cellsToFill = 3;
-          this.colors = ["yellow","blue","red"];
-          this.choice = "";
-          this.newRow = [];
-
-          for (var i=0;i<this.cellsToFill;i++){
-            var randCol = [Math.floor(Math.random() * this.colors.length)];
-            this.choice = this.colors[randCol];
-            this.newRow.push(this.colors[randCol]);
-          }
-          console.log(this.newRow);
-          self.a = this.newRow[0];
-          self.b = this.newRow[1];
-          self.c = this.newRow[2];
+          cellsToFill = cellsToFill + 3;
 
         } else if (paircount === 0 && i >=1 || paircount === 1 && i >=1){
           self.grid.push(currentRow[0],currentRow[1],currentRow[2]);
@@ -165,7 +156,30 @@ game = {
       }
     });
     // Add new row at start of array
-    if (match) {self.grid.splice(0,0,self.a,self.b,self.c);}
+    if (match) {
+
+      for (var i=0;i< cellsToFill;i++){
+        var randCol = [Math.floor(Math.random() * colors.length)];
+        choice = colors[randCol];
+        this.newRow.push(colors[randCol]);
+      }
+
+      // console.log(this.newRow);
+      self.a = this.newRow[0];
+      self.b = this.newRow[1];
+      self.c = this.newRow[2];
+      self.d = this.newRow[3];
+      self.e = this.newRow[4];
+      self.f = this.newRow[5];
+
+      if (cellsToFill > 3){
+        self.grid.splice(0,0,self.d,self.e,self.f,self.a,self.b,self.c);
+      }
+      else {
+        self.grid.splice(0,0,self.a,self.b,self.c);
+      }
+    }
+    console.log(self.grid);
     setTimeout(self.updateGrid.bind(self),1000);
 
     // ----------- END: WORKING "DRY" LOGIC ----------------
@@ -187,6 +201,9 @@ game = {
       // console.log(li, self.grid[i]);
       $(li).removeClass("red blue yellow").addClass(self.grid[i]);
     });
+
+    // if new grid doesn't match original grid, check again for match
+    // this.checkRowsForWin();
   }
 };
 
