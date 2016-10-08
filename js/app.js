@@ -104,11 +104,11 @@ game = {
     game.reCheckRow = false;
     this.checkCols = true;
 
-    rowsToCheck.forEach(function(currentRow, i){
+    rowsToCheck.forEach(function(currentCol, i){
       paircount = 0;
       // Check cols within row
       for (var i = 0; i < numCols; i++){
-        if (currentRow[i] === currentRow[i+1]){
+        if (currentCol[i] === currentCol[i+1]){
           paircount++;
         } else {
           paircount=0;
@@ -128,7 +128,7 @@ game = {
           cellsToFill = cellsToFill + 3;
 
         } else if (paircount === 0 && i >=1 || paircount === 1 && i >=1){
-          self.grid.push(currentRow[0],currentRow[1],currentRow[2]);
+          self.grid.push(currentCol[0],currentCol[1],currentCol[2]);
         }
       }
     });
@@ -156,6 +156,7 @@ game = {
       else {
         self.grid.splice(0,0,self.a,self.b,self.c);
       }
+      game.reCheckCol = true;
     }
 
     // Update grid
@@ -173,50 +174,60 @@ game = {
     this.grid = [];
     var colsToCheck = [this.col1,this.col2,this.col3];
     var paircount = 0;
+    var cellsToFill = 0;
     var self = this;
     var gridTemp = [];
-    var match = false;
     game.reCheckCol = false;
+    var newCol = [];
+    var colors = ["yellow","blue","red"];
 
-    colsToCheck.forEach(function(currentCol, i){
+    colsToCheck.forEach(function(currentRow, i){
       paircount = 0;
       for (var i = 0; i < numRows; i++){
-        if (currentCol[i] === currentCol[i+1]){
+        if (currentRow[i] === currentRow[i+1]){
           paircount++;
         } else {
           paircount=0;
         }
 
         if (paircount === 2){
-          // console.log("Remove column");
-            gridTemp.push("new1","new2","new3");
+
           // Update score and scoreboard
-          // game.score += 10;
-          // game.$scoreBoard.text(game.score);
+          game.score += 10;
+          game.$scoreBoard.text(game.score);
 
           // set it to recheck cols
-          match = true;
           game.reCheckCol = true; // Prevents infinite loop of checking
 
           // Set number of new cols needed to be generated
-          // cellsToFill = cellsToFill + 3;
+          cellsToFill = 3;
+          for (var i=0;i< cellsToFill;i++){
+            var randCol = [Math.floor(Math.random() * colors.length)];
+            choice = colors[randCol];
+            newCol.push(colors[randCol]);
+          }
+          self.a = newCol[0];
+          self.b = newCol[1];
+          self.c = newCol[2];
+          gridTemp.push(self.a,self.b,self.c);
+
+          // Need to re-check the rows once the columns have been updated
+          game.reCheckRow = false;
 
         }
         else if (paircount === 0 && i >=1 || paircount === 1 && i >=1){
-          gridTemp.push(currentCol[0],currentCol[1],currentCol[2]);
+          gridTemp.push(currentRow[0],currentRow[1],currentRow[2]);
         }
       }
-      // console.log("Temp grid: "+gridTemp);
-      self.grid = [gridTemp[0],gridTemp[3],gridTemp[6],gridTemp[1],gridTemp[4],gridTemp[7],gridTemp[2],gridTemp[5],gridTemp[8]];
 
     });
+    self.grid = [gridTemp[0],gridTemp[3],gridTemp[6],gridTemp[1],gridTemp[4],gridTemp[7],gridTemp[2],gridTemp[5],gridTemp[8]];
+
     game.checkCols = false;
-    console.log("Grid to build: "+self.grid);
     this.updateGrid();
   },
   updateGrid: function(){
     var self = this;
-    console.log("Grid being built: "+self.grid);
 
     $.each($('li'), function(i, li){
       $(li).removeClass("red blue yellow").addClass(self.grid[i]);
