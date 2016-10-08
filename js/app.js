@@ -2,24 +2,37 @@ var game = game || {};
 
 game = {
   generateGrid: function(){
-    this.colors = ["yellow","blue","red"];
-    this.numCells = 9; // future proofing for level change
     this.grid =[];
     this.choice = "";
+
+    console.log(this.currentLevel);
+    if (this.currentLevel === 1){
+      this.numCells = 9;
+      this.colors = ["yellow","blue","red"];
+    } else if (this.currentLevel === 2){
+      this.numCells = 16;
+      this.colors = ["yellow","blue","red","purple"];
+    }
 
     for (var i=0;i<this.numCells;i++){
       var randCol = [Math.floor(Math.random() * this.colors.length)];
       this.choice = this.colors[randCol];
       this.grid.push(this.colors[randCol]);
     }
+    console.log(this.grid);
   },
   init: function() {
+    this.currentLevel = 1;
+    this.$levelDisplay = $('#level').text(this.currentLevel);
+    $('#board').addClass("level"+this.currentLevel);
+    
     this.generateGrid();
 
-    this.score = 0;
     var $ul = $('ul');
+
+    this.score = 0;
     this.$scoreBoard = $('#score').text(this.score);
-    var $level = $('level');
+
     var $timer = $('timer');
     this.clickCounter = 0;
     this.a = ""; // id of 1st selected cell
@@ -87,28 +100,44 @@ game = {
     this.checkRowsForWin();
   },
   checkRowsForWin: function() {
-    this.row1 = this.grid.slice(0,3); // for use when re-running check
-    this.row2 = this.grid.slice(3,6);
-    this.row3 = this.grid.slice(6,9);
+    var numRows= 0;
+    var numCols = 0;
+    var rowsToCheck = [];
+    var colors;
+
+    if (this.currentLevel === 1) {
+      this.row1 = this.grid.slice(0,3); // for use when re-running check
+      this.row2 = this.grid.slice(3,6);
+      this.row3 = this.grid.slice(6,9);
+      numRows = 3;
+      numCols = 2;
+      rowsToCheck = [this.row1,this.row2,this.row3];
+      colors = ["yellow","blue","red"];
+    } else if (this.currentLevel === 2){
+      this.row1 = this.grid.slice(0,4); // for use when re-running check
+      this.row2 = this.grid.slice(4,8);
+      this.row3 = this.grid.slice(8,12);
+      this.row4 = this.grid.slice(12,16);
+      numRows = 4;
+      numCols = 3;
+      rowsToCheck = [this.row1,this.row2,this.row3,this.row4];
+      colors = ["yellow","blue","red","purple"];
+    }
     this.grid = []; // empty grid ready to re-build
-    var numRows = 3;
-    var numCols =2;
-    var rowsToCheck = [this.row1,this.row2,this.row3];
     var paircount = 0;
     var self = this;
     var match = false;
     var cellsToFill = 0;
     this.newRow = [];
-    var colors = ["yellow","blue","red"];
     var choice = "";
     game.reCheckRow = false;
     this.checkCols = true;
 
-    rowsToCheck.forEach(function(currentCol, i){
+    rowsToCheck.forEach(function(currentRow, i){
       paircount = 0;
       // Check cols within row
       for (var i = 0; i < numCols; i++){
-        if (currentCol[i] === currentCol[i+1]){
+        if (currentRow[i] === currentRow[i+1]){
           paircount++;
         } else {
           paircount=0;
@@ -128,7 +157,7 @@ game = {
           cellsToFill = cellsToFill + 3;
 
         } else if (paircount === 0 && i >=1 || paircount === 1 && i >=1){
-          self.grid.push(currentCol[0],currentCol[1],currentCol[2]);
+          self.grid.push(currentRow[0],currentRow[1],currentRow[2]);
         }
       }
     });
@@ -149,13 +178,28 @@ game = {
       self.d = this.newRow[3];
       self.e = this.newRow[4];
       self.f = this.newRow[5];
+      self.g = this.newRow[6];
+      self.h = this.newRow[7];
+      self.i = this.newRow[8];
+      self.j = this.newRow[9];
+      self.k = this.newRow[10];
+      self.l = this.newRow[11];
+      self.m = this.newRow[12];
+      self.n = this.newRow[13];
+      self.o = this.newRow[14];
+      self.p = this.newRow[15];
 
-      if (cellsToFill > 3){
-        self.grid.splice(0,0,self.a,self.b,self.c,self.d,self.e,self.f);
+      if (this.currentLevel === 1){
+        if (cellsToFill === 6){
+          self.grid.splice(0,0,self.a,self.b,self.c,self.d,self.e,self.f);
+        }
+        else if (cellsToFill === 3){
+          self.grid.splice(0,0,self.a,self.b,self.c);
+        }
+      } else if (this.currentLevel === 2) {
+        console.log("lots of cells to fill");
       }
-      else {
-        self.grid.splice(0,0,self.a,self.b,self.c);
-      }
+
       game.reCheckCol = true;
     }
 
@@ -181,10 +225,10 @@ game = {
     var newCol = [];
     var colors = ["yellow","blue","red"];
 
-    colsToCheck.forEach(function(currentRow, i){
+    colsToCheck.forEach(function(currentCol, i){
       paircount = 0;
       for (var i = 0; i < numRows; i++){
-        if (currentRow[i] === currentRow[i+1]){
+        if (currentCol[i] === currentCol[i+1]){
           paircount++;
         } else {
           paircount=0;
@@ -216,7 +260,7 @@ game = {
 
         }
         else if (paircount === 0 && i >=1 || paircount === 1 && i >=1){
-          gridTemp.push(currentRow[0],currentRow[1],currentRow[2]);
+          gridTemp.push(currentCol[0],currentCol[1],currentCol[2]);
         }
       }
 
@@ -224,7 +268,7 @@ game = {
     self.grid = [gridTemp[0],gridTemp[3],gridTemp[6],gridTemp[1],gridTemp[4],gridTemp[7],gridTemp[2],gridTemp[5],gridTemp[8]];
 
     game.checkCols = false;
-    this.updateGrid();
+    setTimeout(this.updateGrid(),1000);
   },
   updateGrid: function(){
     var self = this;
