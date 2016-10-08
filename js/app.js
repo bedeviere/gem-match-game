@@ -175,6 +175,8 @@ game = {
     var paircount = 0;
     var self = this;
     var gridTemp = [];
+    var match = false;
+    game.reCheckCol = false;
 
     colsToCheck.forEach(function(currentCol, i){
       paircount = 0;
@@ -193,8 +195,8 @@ game = {
           // game.$scoreBoard.text(game.score);
 
           // set it to recheck cols
-          // match = true;
-          // game.reCheckCol = true; // Prevents infinite loop of checking
+          match = true;
+          game.reCheckCol = true; // Prevents infinite loop of checking
 
           // Set number of new cols needed to be generated
           // cellsToFill = cellsToFill + 3;
@@ -208,6 +210,7 @@ game = {
       self.grid = [gridTemp[0],gridTemp[3],gridTemp[6],gridTemp[1],gridTemp[4],gridTemp[7],gridTemp[2],gridTemp[5],gridTemp[8]];
 
     });
+    game.checkCols = false;
     console.log("Grid to build: "+self.grid);
     this.updateGrid();
   },
@@ -222,7 +225,7 @@ game = {
     // if new grid doesn't match original grid, check again for match
     if (game.reCheckRow === true) {
       this.checkRowsForWin();
-    } else if (game.checkCols === true) {
+    } else if (this.checkCols === true) {
       this.checkColsForWin();
     }
   }
