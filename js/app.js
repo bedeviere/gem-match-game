@@ -16,7 +16,11 @@ game = {
   init: function() {
     this.generateGrid();
 
+    this.score = 0;
     var $ul = $('ul');
+    this.$scoreBoard = $('#score').text(this.score);
+    var $level = $('level');
+    var $timer = $('timer');
     this.clickCounter = 0;
     this.a = ""; // id of 1st selected cell
     this.b = "";
@@ -28,12 +32,12 @@ game = {
     this.row1 = this.grid.slice(0,3);
     this.row2 = this.grid.slice(3,6);
     this.row3 = this.grid.slice(6,9);
-    this.row1Win = false;
-    this.row2Win = false;
-    this.row3Win = false;
-    this.col1Win = false;
-    this.col2Win = false;
-    this.col3Win = false;
+    // this.row1Win = false;
+    // this.row2Win = false;
+    // this.row3Win = false;
+    // this.col1Win = false;
+    // this.col2Win = false;
+    // this.col3Win = false;
 
 
     $.each(this.grid, function(i, cellClass){
@@ -49,8 +53,9 @@ game = {
 
     this.checkRowsForWin(); // random generator might create matches on setup
   },
-  // setVisualGrid: function(){
-  //   this.grid = this.grid;
+  // updateScoreBoard: function(){
+  //   this.currentScore = 0;
+  //   $scoreBoard.text(this.currentScore);
   // },
   updateClickCounter: function(e){
     // this.cellClicked = e.target;
@@ -149,6 +154,11 @@ game = {
 
         // IF there is a match, run function to add new row
         if (paircount === 2){
+          // Update score and scoreboard
+          game.score += 10;
+          game.$scoreBoard.text(game.score);
+
+          // set it to recheck rows 
           match = true;
           game.reCheck = true;
 
@@ -178,13 +188,13 @@ game = {
       self.f = this.newRow[5];
 
       if (cellsToFill > 3){
-        self.grid.splice(0,0,self.d,self.e,self.f,self.a,self.b,self.c);
+        self.grid.splice(0,0,self.a,self.b,self.c,self.d,self.e,self.f);
       }
       else {
         self.grid.splice(0,0,self.a,self.b,self.c);
       }
     }
-    console.log(game.reCheck);
+    // console.log(game.reCheck);
     // console.log(self.grid);
     setTimeout(self.updateGrid.bind(self),1000);
 
@@ -205,14 +215,13 @@ game = {
     var self = this;
 
     $.each($('li'), function(i, li){
-      // console.log(li, self.grid[i]);
       $(li).removeClass("red blue yellow").addClass(self.grid[i]);
     });
 
     // if new grid doesn't match original grid, check again for match
     if (game.reCheck === true) {
       this.checkRowsForWin();
-    };
+    }
   }
 };
 
