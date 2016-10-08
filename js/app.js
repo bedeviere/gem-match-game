@@ -29,16 +29,6 @@ game = {
     this.aClass = "";  // class of 1st selected cell
     this.bClass = "";
     this.tempClass = "";
-    this.row1 = this.grid.slice(0,3);
-    this.row2 = this.grid.slice(3,6);
-    this.row3 = this.grid.slice(6,9);
-    // this.row1Win = false;
-    // this.row2Win = false;
-    // this.row3Win = false;
-    // this.col1Win = false;
-    // this.col2Win = false;
-    // this.col3Win = false;
-
 
     $.each(this.grid, function(i, cellClass){
       $ul.append("<li id='"+ i +"' class='"+ cellClass +"'></li>");
@@ -53,12 +43,8 @@ game = {
 
     this.checkRowsForWin(); // random generator might create matches on setup
   },
-  // updateScoreBoard: function(){
-  //   this.currentScore = 0;
-  //   $scoreBoard.text(this.currentScore);
-  // },
   updateClickCounter: function(e){
-    // this.cellClicked = e.target;
+
     this.currentClass = e.className;
     this.cellIndex = parseFloat(e.id);
 
@@ -75,9 +61,12 @@ game = {
       this.b = e;
 
       // check valid selection
-      if (this.bIndex === this.aIndex + 3 || this.bIndex === this.aIndex -3 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1){
+      if (this.bIndex === this.aIndex + 3 || this.bIndex === this.aIndex -3 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
+      // and move will result in row of 3
+      {
         this.updateGridDisplay();
-      } else {
+      }
+      else {
         console.log("NO MOVE");
       }
       this.clickCounter = 0;
@@ -98,34 +87,6 @@ game = {
     this.checkRowsForWin();
   },
   checkRowsForWin: function() {
-
-    // ----------- START: WORKING "WET" LOGIC ----------------
-    // var winningRows = [];
-    // // console.log(this.row1 + this.row2 + this.row3);
-    // if (this.row1[1] === this.row1[0] && this.row1[1] === this.row1[2]){
-    //   winningRows.push(1);
-    //   // console.log(winningRows);
-    // }
-    // if (this.row2[1] === this.row2[0] && this.row2[1] === this.row2[2]){
-    //   winningRows.push(2);
-    //   // console.log(winningRows);
-    // }
-    // if (this.row3[1] === this.row3[0] && this.row3[1] === this.row3[2]){
-    //   winningRows.push(3);
-    //   // console.log(winningRows);
-    // }
-    //
-    // if (winningRows){
-    //   this.grid.splice(3,3);
-    //   this.grid.splice(0,0,"new0","new1","new2");
-    //
-    //   // update grid
-    //   setTimeout(this.updateGrid.bind(this),1000);
-    // }
-    // ----------- END: WORKING "WET" LOGIC ----------------
-
-
-    // ----------- START: WORKING "DRY" LOGIC ----------------
     this.row1 = this.grid.slice(0,3); // for use when re-running check
     this.row2 = this.grid.slice(3,6);
     this.row3 = this.grid.slice(6,9);
@@ -140,11 +101,12 @@ game = {
     this.newRow = [];
     var colors = ["yellow","blue","red"];
     var choice = "";
-    game.reCheck = false;
+    game.reCheckRow = false;
+    this.checkCols = true;
 
     rowsToCheck.forEach(function(currentRow, i){
       paircount = 0;
-      // Check cols
+      // Check cols within row
       for (var i = 0; i < numCols; i++){
         if (currentRow[i] === currentRow[i+1]){
           paircount++;
@@ -152,17 +114,17 @@ game = {
           paircount=0;
         }
 
-        // IF there is a match, run function to add new row
+        // IF there is a match, update score and add new row
         if (paircount === 2){
           // Update score and scoreboard
           game.score += 10;
           game.$scoreBoard.text(game.score);
 
-          // set it to recheck rows 
+          // set it to recheck rows
           match = true;
-          game.reCheck = true;
+          game.reCheckRow = true; // Prevents infinite loop of checking
 
-          // generate new row
+          // Set number of new rows needed to be generated
           cellsToFill = cellsToFill + 3;
 
         } else if (paircount === 0 && i >=1 || paircount === 1 && i >=1){
@@ -173,13 +135,14 @@ game = {
     // Add new row at start of array
     if (match) {
 
+      // Build array of random colors
       for (var i=0;i< cellsToFill;i++){
         var randCol = [Math.floor(Math.random() * colors.length)];
         choice = colors[randCol];
         this.newRow.push(colors[randCol]);
       }
 
-      // console.log(this.newRow);
+      // Break apart new row array
       self.a = this.newRow[0];
       self.b = this.newRow[1];
       self.c = this.newRow[2];
@@ -194,37 +157,76 @@ game = {
         self.grid.splice(0,0,self.a,self.b,self.c);
       }
     }
-    // console.log(game.reCheck);
-    // console.log(self.grid);
-    setTimeout(self.updateGrid.bind(self),1000);
 
-    // ----------- END: WORKING "DRY" LOGIC ----------------
+    // Update grid
+    setTimeout(self.updateGrid.bind(self),1000);
   },
   checkColsForWin: function(){
 
-    // // if not, check cols
-    // else if (this.grid[0] === this.grid[3] && this.grid[0] === this.grid[6] ){
-    //   this.col1Win = true;
-    // } else if (this.grid[1] === this.grid[4] && this.grid[1] === this.grid[7] ){
-    //   this.col2Win = true;
-    // } else if (this.grid[2] === this.grid[5] && this.grid[2] === this.grid[8] ){
-    //   this.col3Win = true;
-    // }
+    // After rows have been checked, time to check the colums for matches!
+    this.col1 = [this.grid[0],this.grid[3], this.grid[6]];
+    this.col2 = [this.grid[1],this.grid[4], this.grid[7]];
+    this.col3 = [this.grid[2],this.grid[5], this.grid[8]];
+
+    var numRows = 2;
+    var numCols = 3;
+    this.grid = [];
+    var colsToCheck = [this.col1,this.col2,this.col3];
+    var paircount = 0;
+    var self = this;
+    var gridTemp = [];
+
+    colsToCheck.forEach(function(currentCol, i){
+      paircount = 0;
+      for (var i = 0; i < numRows; i++){
+        if (currentCol[i] === currentCol[i+1]){
+          paircount++;
+        } else {
+          paircount=0;
+        }
+
+        if (paircount === 2){
+          // console.log("Remove column");
+            gridTemp.push("new1","new2","new3");
+          // Update score and scoreboard
+          // game.score += 10;
+          // game.$scoreBoard.text(game.score);
+
+          // set it to recheck cols
+          // match = true;
+          // game.reCheckCol = true; // Prevents infinite loop of checking
+
+          // Set number of new cols needed to be generated
+          // cellsToFill = cellsToFill + 3;
+
+        }
+        else if (paircount === 0 && i >=1 || paircount === 1 && i >=1){
+          gridTemp.push(currentCol[0],currentCol[1],currentCol[2]);
+        }
+      }
+      // console.log("Temp grid: "+gridTemp);
+      self.grid = [gridTemp[0],gridTemp[3],gridTemp[6],gridTemp[1],gridTemp[4],gridTemp[7],gridTemp[2],gridTemp[5],gridTemp[8]];
+
+    });
+    console.log("Grid to build: "+self.grid);
+    this.updateGrid();
   },
   updateGrid: function(){
     var self = this;
+    console.log("Grid being built: "+self.grid);
 
     $.each($('li'), function(i, li){
       $(li).removeClass("red blue yellow").addClass(self.grid[i]);
     });
 
     // if new grid doesn't match original grid, check again for match
-    if (game.reCheck === true) {
+    if (game.reCheckRow === true) {
       this.checkRowsForWin();
+    } else if (game.checkCols === true) {
+      this.checkColsForWin();
     }
   }
 };
-
 
 $(function(){
   game.init();
