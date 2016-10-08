@@ -212,7 +212,7 @@ game = {
           gridTemp.push(self.a,self.b,self.c);
 
           // Need to re-check the rows once the columns have been updated
-          game.reCheckRow = false;
+          game.reCheckRow = true;
 
         }
         else if (paircount === 0 && i >=1 || paircount === 1 && i >=1){
