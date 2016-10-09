@@ -232,6 +232,7 @@ game = {
 
     // ---------------- START: LEVEL 2 - ROWS  ----------------
     else if (this.currentLevel === 2){
+      console.log("Checking rows.... ");
       this.row1 = [this.grid[0],this.grid[1], this.grid[2], this.grid[3]];
       this.row2 = [this.grid[4],this.grid[5], this.grid[6], this.grid[7]];
       this.row3 = [this.grid[8],this.grid[9], this.grid[10], this.grid[11]];
@@ -245,12 +246,11 @@ game = {
       var cellsToFill = 0;
       var self = this;
       var gridTemp = [];
-      game.reCheckCol = false;
+      game.reCheckRow = false;
       var newCol = [];
       var match = false;
-      // var colors = ["yellow","blue","red"];
 
-      rowsToCheck.forEach(function(currentRow, rowI){
+      rowsToCheck.forEach(function(currentRow, i){
         paircount = 0;
         for (var i = 0; i < numCols; i++){
           if (currentRow[i] === currentRow[i+1]){
@@ -265,85 +265,104 @@ game = {
               c = game.randCol();
               d = game.randCol();
               gridTemp.push(a,b,c,d);
-              // gridTemp.push("orange","black","orange","black");
-              // Update score and scoreboard
 
+              // Update score and scoreboard
               match = true;
               game.score += 15;
-              game.reCheckRow = true; // Prevents infinite loop of checking
+              console.log("REMOVE row.... ");
+              console.log("Update score.... ");
+
             }
             else if (paircount === 2){
-              // Update score and scoreboard
-              if (currentRow[i] !== currentRow[i-1]){
+
+              if (currentRow[i] !== currentRow[i-1]){ // NOT A WIN!
                 gridTemp.push(currentRow[i-2],currentRow[i-1],currentRow[i-0],currentRow[i+1]);
-              } else if (currentRow[i] === currentRow[i+1]){
+              }
+              else if (currentRow[i] === currentRow[i+1]){
+
+                // Update score and scoreboard
+                match = true;
+                game.score += 10;
+                console.log("REMOVE row.... ");
+                console.log("Update score.... ");
+
                 a = game.randCol();
                 b = game.randCol();
                 c = game.randCol();
 
                 var keepMe = [gridTemp[0],gridTemp[4],gridTemp[8]];
-                // console.log("a: "+a, "b: "+b,"c: "+c);
+
                 if (!keepMe[0]){ // row 1
                   gridTemp.push(currentRow[i-2],a,b,c);
-                } else if (keepMe[2]){ // row 4
 
-                  // gridTemp.splice(1,0,a,b,c,currentRow[i-2]);
+                }
+                else if (keepMe[2]){ // row 4
+                  // gridTemp.splice(0,0,currentRow[i-2],currentRow[i-1],currentRow[i],currentRow[i+1]); // inject 4
+                  gridTemp.splice(0,1); // remove pos 0
+                  gridTemp.splice(3,1); // remove pos 3
+                  gridTemp.splice(6,1); // remove pos 6
+                  gridTemp.splice(0,0,a,b,c); // add 3 new at start
+                  gridTemp.splice(0,0,keepMe[0]); // re-add 0
+                  gridTemp.splice(4,0,keepMe[1]); // re-add 4
+                  gridTemp.splice(8,0,keepMe[2]); // re-add 8
+                  gridTemp.splice(12,0,currentRow[i-2]); // pop 12 back
+
                 } else if (keepMe[1]){ // row 3
                   gridTemp.splice(0,1); // remove 0
                   gridTemp.splice(3,1); // remove 3
                   gridTemp.splice(0,0,a,b,c); // add 3 new at start
                   gridTemp.splice(0,0,keepMe[0]); // re-add 0
-                  gridTemp.splice(4,0,currentRow[i-2]); // inject 4
-                  gridTemp.splice(8,0,currentRow[i-2]); // add 8
+                  gridTemp.splice(4,0,keepMe[1]); // re-add 4
+                  gridTemp.splice(8,0,currentRow[i-2]); // pop 8 back
 
                 } else if (keepMe[0]){ // row 2
                   gridTemp.splice(0,1); // remove 0
                   gridTemp.splice(0,0,a,b,c); // add 3 new at start
                   gridTemp.splice(0,0,keepMe[0]); // re-add 0
-                  gridTemp.splice(4,0,currentRow[i-2]); // inject 4
+                  gridTemp.splice(4,0,currentRow[i-2]); // inject at 4
 
                 }
-                // gridTemp.push(a,b,c,currentRow[i-2]);
-                // gridTemp.push("orange","black","orange",currentRow[i-2]);
-              } else {
+
+              }
+              else {
+
+                // Update score and scoreboard
+                match = true;
+                game.score += 10;
+                console.log("REMOVE row.... ");
+                console.log("Update score.... ");
+
                 a = game.randCol();
                 b = game.randCol();
                 c = game.randCol();
-                // console.log("a: "+a, "b: "+b,"c: "+c);
 
                 var remain = [gridTemp[3],gridTemp[7],gridTemp[11]];
                 if (!remain[0]){ // row 1
                   gridTemp.push(a,b,c,currentRow[i+1]);
                 } else if (remain[2]) { // row 4
-                  gridTemp.splice(3,1);
-                  gridTemp.splice(6,1);
-                  gridTemp.splice(9,1);
-                  gridTemp.splice(0,0,a,b,c,remain[0]);
-                  gridTemp.splice(7,0,remain[1]);
-                  gridTemp.splice(11,0,remain[2]);
-                  gridTemp.push(currentRow[i+1]);
+                  gridTemp.splice(3,1); // remove 3
+                  gridTemp.splice(6,1); // remove 7
+                  gridTemp.splice(9,1); // remove 11
+                  gridTemp.splice(0,0,a,b,c,remain[0]); // add new and re-add 3
+                  gridTemp.splice(7,0,remain[1]); // re-add 7
+                  gridTemp.splice(11,0,remain[2]); // re-add 11
+                  gridTemp.push(currentRow[i+1]); // pop 15 back
 
                 } else if (remain[1]){ // row 3
-                  gridTemp.splice(3,1);
-                  gridTemp.splice(6,1);
-                  gridTemp.splice(0,0,a,b,c,remain[0]);
-                  gridTemp.splice(7,0,remain[1]);
-                  gridTemp.push(currentRow[i+1]);
+                  gridTemp.splice(3,1); // remove 3
+                  gridTemp.splice(6,1); // remove 7
+                  gridTemp.splice(0,0,a,b,c,remain[0]);  // add new and re-add 3
+                  gridTemp.splice(7,0,remain[1]);  // re-add 7
+                  gridTemp.push(currentRow[i+1]); // pop 11 back
 
                 } else if (remain[0]){ // row 2
-                  gridTemp.splice(3,1);
-                  gridTemp.splice(0,0,a,b,c,remain[0]);
-                  gridTemp.push(currentRow[i+1]);
+                  gridTemp.splice(3,1);  // remove 3
+                  gridTemp.splice(0,0,a,b,c,remain[0]); // add new and re-add 3
+                  gridTemp.push(currentRow[i+1]); // pop 7 back
                 } else if (!gridTemp){
                   gridTemp.push(a,b,c,currentRow[i+1]);
                 }
-
-                // gridTemp.push("orange","black","orange",currentRow[i+1]);
               }
-
-              match = true;
-              game.score += 10;
-              game.reCheckRow = true; // Prevents infinite loop of checking
             }
             else if (paircount === 1){
               gridTemp.push(currentRow[i-2],currentRow[i-1],currentRow[i],currentRow[i+1]);
@@ -356,15 +375,25 @@ game = {
 
       });
       if (match === true) {
-        game.reCheckRow = true;
+        game.reCheckRow = true; // Prevents infinite loop of checking
         game.$scoreBoard.text(game.score);
+      } else {
+        game.reCheckRow = false;
       }
 
       // console.log("Temp Grid: "+gridTemp);
       self.grid = gridTemp;
 
-      game.checkCols = true;
-      setTimeout(self.updateGrid.bind(self),1000);
+      if (this.reCheckCol === false) {
+        this.checkCols = false;
+      } else {
+        this.checkCols = true;
+      }
+
+      // setTimeout(self.updateGrid.bind(self),1000); // original
+      // self.updateGrid.bind(self);
+      // game.updateGrid();
+      setTimeout(self.checkColsForWin(),5000);
     }
 
     // ---------------- END: LEVEL 2 - BROKEN ----------------
@@ -437,6 +466,8 @@ game = {
       // ------------- START: Level 2 COLUMN check -------------
     }
     else if (this.currentLevel === 2){
+
+      console.log("Checking cols.... ");
       this.col1 = [this.grid[0],this.grid[4], this.grid[8], this.grid[12]];
       this.col2 = [this.grid[1],this.grid[5], this.grid[9], this.grid[13]];
       this.col3 = [this.grid[2],this.grid[6], this.grid[10], this.grid[14]];
@@ -453,7 +484,7 @@ game = {
       game.reCheckCol = false;
       var newCol = [];
       var match = false;
-      // var colors = ["yellow","blue","red"];
+      this.checkCols = false;
 
       colsToCheck.forEach(function(currentCol, i){
         paircount = 0;
@@ -470,36 +501,41 @@ game = {
               c = game.randCol();
               d = game.randCol();
               gridTemp.push(a,b,c,d);
-              // gridTemp.push("orange","black","orange","black");
-              // Update score and scoreboard
 
+              // Update score and scoreboard
               match = true;
               game.score += 15;
-              game.reCheckCol = true; // Prevents infinite loop of checking
+              console.log("REMOVE col.... ");
+              console.log("Update score.... ");
             }
             else if (paircount === 2){
               // Update score and scoreboard
-              if (currentCol[i] !== currentCol[i-1]){
+              if (currentCol[i] !== currentCol[i-1]){ // NO MATCH
                 gridTemp.push(currentCol[i-2],currentCol[i-1],currentCol[i-0],currentCol[i+1]);
+
               } else if (currentCol[i] === currentCol[i+1]){
                 a = game.randCol();
                 b = game.randCol();
                 c = game.randCol();
-                console.log("a: "+a, "b: "+b,"c: "+c);
                 gridTemp.push(a,b,c,currentCol[i-2]);
-                // gridTemp.push("orange","black","orange",currentCol[i-2]);
+
+                match = true;
+                game.score += 10;
+                console.log("REMOVE col.... ");
+                console.log("Update score.... ");
+
               } else {
                 a = game.randCol();
                 b = game.randCol();
                 c = game.randCol();
-                console.log("a: "+a, "b: "+b,"c: "+c);
                 gridTemp.push(a,b,c,currentCol[i+1]);
-                // gridTemp.push("orange","black","orange",currentCol[i+1]);
-              }
 
-              match = true;
-              game.score += 10;
-              game.reCheckCol = true; // Prevents infinite loop of checking
+                match = true;
+                game.score += 10;
+                console.log("REMOVE col.... ");
+                console.log("Update score.... ");
+
+              }
             }
             else if (paircount === 1){
               gridTemp.push(currentCol[i-2],currentCol[i-1],currentCol[i],currentCol[i+1]);
@@ -512,15 +548,17 @@ game = {
 
       });
       if (match === true) {
-        game.reCheckCol = true;
         game.$scoreBoard.text(game.score);
+        game.reCheckRow = true;
+        game.reCheckCol = true;
+      } else {
+        this.reCheckCol = false;
       }
 
-      // console.log("Temp Grid: "+gridTemp);
       self.grid = [gridTemp[0],gridTemp[4],gridTemp[8],gridTemp[12],gridTemp[1],gridTemp[5],gridTemp[9],gridTemp[13],gridTemp[2],gridTemp[6],gridTemp[10],gridTemp[14],gridTemp[3],gridTemp[7],gridTemp[11],gridTemp[15]];
 
-      game.checkCols = false;
-      setTimeout(this.updateGrid(),1000);
+      setTimeout(this.updateGrid(),3000);
+      // this.updateGrid();
     }
     // ------------- END: Level 2 COLUMN check -------------
 
@@ -532,33 +570,49 @@ game = {
     if (this.currentLevel === 1){
       // var self = this;
 
-      $.each($('li'), function(i, li){
-        $(li).removeClass("red blue yellow").addClass(self.grid[i]);
-      });
-
-      // if new grid doesn't match original grid, check again for match
-      if (game.reCheckRow === true) {
-        this.checkRowsForWin();
-      } else if (this.checkCols === true) {
-        this.checkColsForWin();
-      }
+      // $.each($('li'), function(i, li){
+      //   $(li).removeClass("red blue yellow").addClass(self.grid[i]);
+      // });
+      //
+      // // if new grid doesn't match original grid, check again for match
+      // if (this.checkCols === true) {
+      //   this.checkColsForWin();
+      // } else if (game.reCheckRow === true) {
+      //   this.checkRowsForWin();
+      // }
     }
     // --------------- END: LEVEL 1 -----------
 
     // --------------- START: LEVEL 2 -----------
     else if (this.currentLevel === 2){
       // var self = this;
-      // console.log("Grid to build: "+self.grid);
+      console.log("Updating grid...");
+
+
       $.each($('li'), function(i, li){
-        $(li).removeClass("red blue yellow purple").addClass(self.grid[i]);
+        setTimeout(function(){
+          $(li).removeClass("red blue yellow purple").addClass(self.grid[i]);
+        },2000);
       });
 
-      // if new grid doesn't match original grid, check again for match
-      if (game.reCheckRow === true) {
-        this.checkRowsForWin();
-      } else if (this.checkCols === true) {
-        this.checkColsForWin();
-      }
+
+
+      setTimeout(function(){
+        if (this.checkCols === true) {
+          game.checkColsForWin();
+
+        }
+        // if new grid doesn't match original grid, check again for match
+        else if (game.reCheckRow === true) {
+          game.checkRowsForWin();
+        }
+        else if (game.reCheckCol === true){
+          game.checkColsForWin();
+        }
+        else {
+          return;
+        }
+      },2000);
     }
 
     // --------------- END: LEVEL 2 -----------
