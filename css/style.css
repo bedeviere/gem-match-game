@@ -1,15 +1,42 @@
-body {
-  width: 450px;
+.container {
+  width: 770px;
   margin: 0 auto;
+  border: 1px solid black;
+}
+.gameBoard {
+  display: inline-block;
+  vertical-align: top;
 }
 #board {
-  margin: 0 auto;
+  /*border: 1px solid black;*/
+  /*padding: 20px;*/
+}
+#controlPanel {
+  width: 200px;
+  display: inline-block;
+  border: 1px solid black;
+  padding: 20px;
+}
+.disableBoard {
+  z-index: 5px;
+  background-color: grey;
+  height: 500px;
+  width:420px;
 }
 .level1 {
-  width: 315px;
+  width: 300px;
+  height: 330px;
+  margin: 70px 70px;
+  background-color: rgba(246,231,202,0.6);
+  padding: 40px;
+  border-radius: 10px;
 }
 .level2 {
-  width: 416px;
+  width: 400px;
+  background-color: rgba(246,231,202,0.6);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 70px 30px;
 }
 #timer {
   margin-top: 30px;
@@ -31,28 +58,47 @@ ul li {
   display: inline-block;
   width: 100px;
   height: 100px;
-  border: 1px solid black;
-  border-radius: 100px;
-  transition: all 1s;
+  transition: all 0.5s;
 }
 .red {
-  background-color: red;
+  /*background-color: red;*/
+  background-image: url('../media/img/element_red_diamond_glossy.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .blue {
-  background-color: blue;
+  /*background-color: blue;*/
+  background-image: url('../media/img/element_blue_diamond_glossy.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .yellow {
-  background-color: yellow;
+  /*background-color: yellow;*/
+  background-image: url('../media/img/element_yellow_diamond_glossy.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .purple {
-  background-color: purple;
+  /*background-color: purple;*/
+  background-image: url('../media/img/element_purple_diamond_glossy.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
-.orange {
-  background-color: orange;
+.green {
+  /*background-color: orange;*/
+  background-image: url('../media/img/element_green_diamond_glossy.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
-.black {
-  background-color: black;
+.grey {
+  /*background-color: black;*/
+  background-image: url('../media/img/element_grey_diamond_glossy.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .selected {
-  border: 5px solid black;
+  opacity: 0.2;
+}
+.disabled {
+  opacity: 0.2;
 }

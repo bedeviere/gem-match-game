@@ -14,8 +14,9 @@ game = {
     this.clickCounter = -1;
 
     this.generateBoard(level);
-    this.addBoardClickEvent();
-    this.addBoardResetEvent();
+    // this.addBoardClickEvent();
+    // this.addBoardResetEvent();
+    this.addClickListeners();
     this.checkBoard();
 
   },
@@ -44,15 +45,14 @@ game = {
     $.each(this.grid, function(i, cellClass){
       $ul.append("<li id='"+ i +"' class='"+ cellClass +"'></li>");
     });
-      $('#board').show();
+    $('#board').show();
   },
-  addBoardClickEvent: function(){
+  addClickListeners: function(){
     $('li').off('click').on('click', function(){
       $(this).toggleClass('selected');
       game.updateClickCounter(this);
     });
-  },
-  addBoardResetEvent: function(){
+
     $('#resetBtn').off('click').on('click', function(){
       game.score = 0;
       game.l1Score = 0;
@@ -61,6 +61,7 @@ game = {
     });
   },
   clearBoard: function(){
+    $('#board').hide();
     return $('ul').empty();
   },
   startTimer: function(seconds){
@@ -82,12 +83,19 @@ game = {
       }
     }, 1000);
   },
+  playSound: function(soundEffect){
+
+    // var $sound = $('#sound');
+    //
+    // $sound.src="../media/audio/blop.mp3";
+    // $sound.get(0).play();
+  },
   updateClickCounter: function(e){
 
     if (!game.gameActive) {
       return;
     }
-    var currentClass = e.className;
+    var currentClass = e.className.replace(' selected','');
     this.cellIndex = parseFloat(e.id);
 
     this.clickCounter ++;
@@ -98,12 +106,12 @@ game = {
     }
 
     if (this.clickCounter === 1){
-      this.aClass = currentClass.replace(' selected','');
+      this.aClass = currentClass;
       this.aIndex = this.cellIndex;
       this.a = e;
 
     } else if (this.clickCounter === 2) {
-      this.bClass = currentClass.replace(' selected','');
+      this.bClass = currentClass;
       this.bIndex = this.cellIndex;
       this.b = e;
 
@@ -111,21 +119,25 @@ game = {
       if (this.currentLevel === 1){
         if (this.bIndex === this.aIndex + 3 || this.bIndex === this.aIndex -3 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
         {
+          // this.playSound('valid');
           this.updateGridDisplay();
         }
         else {
-          console.log("NO MOVE");
+          // e.className+=" animated shake";
         }
       } else if (this.currentLevel === 2){
         if (this.bIndex === this.aIndex + 4 || this.bIndex === this.aIndex -4 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
         {
+          // this.playSound('valid');
           this.updateGridDisplay();
         }
         else {
-          console.log("NO MOVE");
+          // e.className+=" animated shake";
+          // e.className-=" animated shake";
         }
       }
       this.clickCounter = 0;
+      // setTimeout(e.className=this.bClass,5000);
     }
   },
   updateGridDisplay : function(){
@@ -532,8 +544,12 @@ game = {
 
     $.each($('li'), function(i, li){
       setTimeout(function(){
+        // $(li).fadeTo( 100, 0 );
         $(li).removeClass("red blue yellow selected").addClass(self.grid[i]);
+        // $(li).fadeTo( 100, 1 );
       },500);
+
+
     });
   },
   updateGridL2: function (){
@@ -550,8 +566,7 @@ game = {
     if (game.currentLevel === 1){
 
       // If reached points count, move to next level
-      if (game.score >= 20) {
-        $('#board').hide();
+      if (game.score >= 200) {
         game.clearBoard();
         game.l1Score = game.score;
         game.init(2); // level 2

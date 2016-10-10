@@ -9,24 +9,29 @@
   <script type="text/javascript" src='js/app.js'></script>
 </head>
 <body>
-  <section id="controlPanel">
-    <h2>Rules</h2>
-    <p>Swap a cell with an adjacent cell to create a row or column of 3.</p>
-    <p>Level 1: You have 30 seconds to reach 200 points to get to level 2.</p>
-    <p>Level 2: You have 40 seconds to reach 500 points to get to level 3. <strong>Tip!</strong> Strings of 4 get double points and an extra second.</p>
+  <div class="container">
+    <section id="controlPanel">
+      <h2>Rules</h2>
+      <p>Swap a cell with an adjacent cell to create a row or column of 3.</p>
+      <p>Level 1: You have 30 seconds to reach 200 points to get to level 2.</p>
+      <p>Level 2: You have 40 seconds to reach 500 points to get to level 3. <strong>Tip!</strong> Strings of 4 get double points and an extra second.</p>
 
-    <div class="score"><p>Score: <span id=score></span></p></div>
-    <div class="level">Level: <span id="level"></span></div>
-    <div id="timer">Time: </div>
-    <div class="topScores">
-      <h2>High Scores</h2>
-      <div id="highScores"></div>
-    </div>
-    <div id="resetBtn" class="btn">New game</div>
-  </section>
-  <div id="board">
-    <ul id="#cells">
-    </ul>
+      <div class="score"><p>Score: <span id=score></span></p></div>
+      <div class="level">Level: <span id="level"></span></div>
+      <div id="timer">Time: </div>
+      <div class="topScores">
+        <h2>High Scores</h2>
+        <div id="highScores"></div>
+      </div>
+      <div id="resetBtn" class="btn">New game</div>
+    </section>
+    <section class="gameBoard">
+      <div id="board">
+        <ul id="cells">
+        </ul>
+      </div>
+    </section>
   </div>
+  <audio id="sound"></audio>
 </body>
 </html>
