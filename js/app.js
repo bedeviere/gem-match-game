@@ -1,28 +1,14 @@
 var game = game || {};
 
 game = {
-  generateGrid: function(){
-    this.grid =[];
-    this.choice = "";
-
-    if (this.currentLevel === 1){
-      this.numCells = 9;
-      this.colors = ["yellow","blue","red"];
-    } else if (this.currentLevel === 2){
-      this.numCells = (16 - 9);
-      this.colors = ["yellow","blue","red","purple"];
-    }
-
-    for (var i=0;i<this.numCells;i++){
-      var randCol = [Math.floor(Math.random() * this.colors.length)];
-      this.choice = this.colors[randCol];
-      this.grid.push(this.colors[randCol]);
-    }
-  },
   init: function(level) {
-    this.currentLevel = level; //  CURRENT LEVEL!!
+    // this.currentLevel = level; //  CURRENT LEVEL!!
+    this.currentLevel = 2; //  CURRENT LEVEL!!
+
     this.$levelDisplay = $('#level').text(this.currentLevel);
     $('#board').addClass("level"+this.currentLevel);
+
+    this.startTimer();
 
     this.generateGrid();
 
@@ -31,7 +17,7 @@ game = {
     this.score = 0;
     this.$scoreBoard = $('#score').text(this.score);
 
-    var $timer = $('timer');
+    // var $timer = $('timer');
     this.clickCounter = 0;
     this.a = ""; // id of 1st selected cell
     this.b = "";
@@ -53,6 +39,40 @@ game = {
     });
 
     this.checkRowsForWin(); // random generator might create matches on setup
+  },
+  generateGrid: function(){
+    this.grid =[];
+    this.choice = "";
+
+    if (this.currentLevel === 1){
+      this.numCells = 9;
+      this.colors = ["yellow","blue","red"];
+    } else if (this.currentLevel === 2){
+      // this.numCells = (16 - 9);
+      this.numCells = (16);
+      this.colors = ["yellow","blue","red","purple"];
+    }
+
+    for (var i=0;i<this.numCells;i++){
+      var randCol = [Math.floor(Math.random() * this.colors.length)];
+      this.choice = this.colors[randCol];
+      this.grid.push(this.colors[randCol]);
+    }
+  },
+  startTimer: function(){
+      $timerDiv = $('#timer');
+      var time = 60;
+
+      var t = setInterval(function() {
+        time--;
+        $timerDiv.text('Time left: '+time);
+
+        if(time === 0) {
+          clearTimeout(t);
+
+          $timerDiv.text("GAME OVER");
+        }
+      }, 1000);
   },
   updateClickCounter: function(e){
 
@@ -121,7 +141,7 @@ game = {
   },
   checkRowsForWin: function() {
     if (this.currentLevel === 1){
-      // ---------------- START: LEVEL 1 - WORKING ----------------
+      // ---------------- START: LEVEL 1 ----------------
       var numRows= 0;
       var numCols = 0;
       var rowsToCheck = [];
@@ -204,7 +224,7 @@ game = {
       // Update grid
       setTimeout(self.updateGrid.bind(self),1000);
     }
-    // ---------------- END: LEVEL 1 - WORKING ----------------
+    // ---------------- END: LEVEL 1 ----------------
 
     // ---------------- START: LEVEL 2 - ROWS  ----------------
     else if (this.currentLevel === 2){
@@ -365,13 +385,13 @@ game = {
         this.checkCols = true;
       }
 
-      // setTimeout(self.updateGrid.bind(self),1000); // original
+      // setTimeout(game.updateGrid.bind(game),1000); // original
       // self.updateGrid.bind(self);
       // game.updateGrid();
       setTimeout(self.checkColsForWin(),5000);
     }
 
-    // ---------------- END: LEVEL 2 - BROKEN ----------------
+    // ---------------- END: LEVEL 2 ROWS ----------------
   },
   checkColsForWin: function(){
     if (this.currentLevel === 1){
@@ -541,7 +561,7 @@ game = {
   updateGrid: function(){
     var self = this;
 
-    // --------------- START: LEVEL 1 -----------
+    // --------------- START: LEVEL 1 : UPDATE GRID -----------
     if (this.currentLevel === 1){
       // var self = this;
 
@@ -549,10 +569,11 @@ game = {
         $(li).removeClass("red blue yellow").addClass(self.grid[i]);
       });
 
+      // If reached points count, move to next level
       if (game.score >= 100) {
-        game.init(2);
+        game.init(2); // level 2
       }
-      console.log("Current score: "+game.score);
+
       // if new grid doesn't match original grid, check again for match
       if (this.checkCols === true) {
         this.checkColsForWin();
@@ -562,7 +583,7 @@ game = {
     }
     // --------------- END: LEVEL 1 -----------
 
-    // --------------- START: LEVEL 2 -----------
+    // --------------- START: LEVEL 2 : UPDATE GRID -----------
     else if (this.currentLevel === 2){
       // var self = this;
       console.log("Updating grid...");
