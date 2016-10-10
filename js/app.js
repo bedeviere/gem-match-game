@@ -8,18 +8,10 @@ game = {
     var $levelDisplay = $('#level').text(this.currentLevel);
     $('#board').removeClass("level1 level2").addClass("level"+this.currentLevel);
 
-
     this.time = 0;
     game.l1Score ? game.score = game.l1Score : game.score = 0;
     this.$scoreBoard = $('#score').text(this.score);
     this.clickCounter = -1;
-    this.a = ""; // id of 1st selected cell
-    this.b = "";
-    this.aIndex = ""; // index of 1st selected cell
-    this.bIndex = "";
-    this.aClass = "";  // class of 1st selected cell
-    this.bClass = "";
-    this.tempClass = "";
 
     this.generateBoard(level);
     this.addBoardClickEvent();
@@ -52,9 +44,11 @@ game = {
     $.each(this.grid, function(i, cellClass){
       $ul.append("<li id='"+ i +"' class='"+ cellClass +"'></li>");
     });
+      $('#board').show();
   },
   addBoardClickEvent: function(){
-    $('li').on('click', function(){
+    $('li').off('click').on('click', function(){
+      $(this).toggleClass('selected');
       game.updateClickCounter(this);
     });
   },
@@ -104,12 +98,12 @@ game = {
     }
 
     if (this.clickCounter === 1){
-      this.aClass = currentClass;
+      this.aClass = currentClass.replace(' selected','');
       this.aIndex = this.cellIndex;
       this.a = e;
 
     } else if (this.clickCounter === 2) {
-      this.bClass = currentClass;
+      this.bClass = currentClass.replace(' selected','');
       this.bIndex = this.cellIndex;
       this.b = e;
 
@@ -119,17 +113,17 @@ game = {
         {
           this.updateGridDisplay();
         }
-        // else {
-        //   console.log("NO MOVE");
-        // }
+        else {
+          console.log("NO MOVE");
+        }
       } else if (this.currentLevel === 2){
         if (this.bIndex === this.aIndex + 4 || this.bIndex === this.aIndex -4 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
         {
           this.updateGridDisplay();
         }
-        // else {
-        //   console.log("NO MOVE");
-        // }
+        else {
+          console.log("NO MOVE");
+        }
       }
       this.clickCounter = 0;
     }
@@ -143,9 +137,6 @@ game = {
   updateGridArray: function (){
     this.grid.splice(this.aIndex,1,this.bClass);
     this.grid.splice(this.bIndex,1,this.aClass);
-    this.row1 = this.grid.slice(0,3); // needed?
-    this.row2 = this.grid.slice(3,6); // needed?
-    this.row3 = this.grid.slice(6,9); // needed?
     this.checkBoard();
   },
   randCol: function(){
@@ -167,7 +158,7 @@ game = {
     var rowsToCheck = [];
     var colors;
 
-    this.row1 = this.grid.slice(0,3); // for use when re-running check
+    this.row1 = this.grid.slice(0,3);
     this.row2 = this.grid.slice(3,6);
     this.row3 = this.grid.slice(6,9);
     numRows = 3;
@@ -273,59 +264,61 @@ game = {
             b = game.randCol();
             c = game.randCol();
             d = game.randCol();
-            gridTemp.push(a,b,c,d);
+            self.grid.push(a,b,c,d);
 
             // Update score and scoreboard
             match = true;
             game.score += 20;
+            game.updateGridL2();
             game.time += 1;
             game.$scoreBoard.text(game.score);
           }
           else if (paircount === 2){
 
             if (currentRow[i] !== currentRow[i-1]){ // NOT A WIN!
-              gridTemp.push(currentRow[i-2],currentRow[i-1],currentRow[i-0],currentRow[i+1]);
+              self.grid.push(currentRow[i-2],currentRow[i-1],currentRow[i-0],currentRow[i+1]);
             }
             else if (currentRow[i] === currentRow[i+1]){
 
               // Update score and scoreboard
               match = true;
               game.score += 10;
+              game.updateGridL2();
               game.$scoreBoard.text(game.score);
 
               a = game.randCol();
               b = game.randCol();
               c = game.randCol();
 
-              var keepMe = [gridTemp[0],gridTemp[4],gridTemp[8]];
+              var keepMe = [self.grid[0],self.grid[4],self.grid[8]];
 
               if (!keepMe[0]){ // row 1
-                gridTemp.push(currentRow[i-2],a,b,c);
+                self.grid.push(currentRow[i-2],a,b,c);
 
               }
               else if (keepMe[2]){ // row 4
-                gridTemp.splice(0,1); // remove pos 0
-                gridTemp.splice(3,1); // remove pos 3
-                gridTemp.splice(6,1); // remove pos 6
-                gridTemp.splice(0,0,a,b,c); // add 3 new at start
-                gridTemp.splice(0,0,keepMe[0]); // re-add 0
-                gridTemp.splice(4,0,keepMe[1]); // re-add 4
-                gridTemp.splice(8,0,keepMe[2]); // re-add 8
-                gridTemp.splice(12,0,currentRow[i-2]); // pop 12 back
+                self.grid.splice(0,1); // remove pos 0
+                self.grid.splice(3,1); // remove pos 3
+                self.grid.splice(6,1); // remove pos 6
+                self.grid.splice(0,0,a,b,c); // add 3 new at start
+                self.grid.splice(0,0,keepMe[0]); // re-add 0
+                self.grid.splice(4,0,keepMe[1]); // re-add 4
+                self.grid.splice(8,0,keepMe[2]); // re-add 8
+                self.grid.splice(12,0,currentRow[i-2]); // pop 12 back
 
               } else if (keepMe[1]){ // row 3
-                gridTemp.splice(0,1); // remove 0
-                gridTemp.splice(3,1); // remove 3
-                gridTemp.splice(0,0,a,b,c); // add 3 new at start
-                gridTemp.splice(0,0,keepMe[0]); // re-add 0
-                gridTemp.splice(4,0,keepMe[1]); // re-add 4
-                gridTemp.splice(8,0,currentRow[i-2]); // pop 8 back
+                self.grid.splice(0,1); // remove 0
+                self.grid.splice(3,1); // remove 3
+                self.grid.splice(0,0,a,b,c); // add 3 new at start
+                self.grid.splice(0,0,keepMe[0]); // re-add 0
+                self.grid.splice(4,0,keepMe[1]); // re-add 4
+                self.grid.splice(8,0,currentRow[i-2]); // pop 8 back
 
               } else if (keepMe[0]){ // row 2
-                gridTemp.splice(0,1); // remove 0
-                gridTemp.splice(0,0,a,b,c); // add 3 new at start
-                gridTemp.splice(0,0,keepMe[0]); // re-add 0
-                gridTemp.splice(4,0,currentRow[i-2]); // inject at 4
+                self.grid.splice(0,1); // remove 0
+                self.grid.splice(0,0,a,b,c); // add 3 new at start
+                self.grid.splice(0,0,keepMe[0]); // re-add 0
+                self.grid.splice(4,0,currentRow[i-2]); // inject at 4
 
               }
 
@@ -335,45 +328,46 @@ game = {
               // Update score and scoreboard
               match = true;
               game.score += 10;
+              game.updateGridL2();
               game.$scoreBoard.text(game.score);
 
               a = game.randCol();
               b = game.randCol();
               c = game.randCol();
 
-              var remain = [gridTemp[3],gridTemp[7],gridTemp[11]];
+              var remain = [self.grid[3],self.grid[7],self.grid[11]];
               if (!remain[0]){ // row 1
-                gridTemp.push(a,b,c,currentRow[i+1]);
+                self.grid.push(a,b,c,currentRow[i+1]);
               } else if (remain[2]) { // row 4
-                gridTemp.splice(3,1); // remove 3
-                gridTemp.splice(6,1); // remove 7
-                gridTemp.splice(9,1); // remove 11
-                gridTemp.splice(0,0,a,b,c,remain[0]); // add new and re-add 3
-                gridTemp.splice(7,0,remain[1]); // re-add 7
-                gridTemp.splice(11,0,remain[2]); // re-add 11
-                gridTemp.push(currentRow[i+1]); // pop 15 back
+                self.grid.splice(3,1); // remove 3
+                self.grid.splice(6,1); // remove 7
+                self.grid.splice(9,1); // remove 11
+                self.grid.splice(0,0,a,b,c,remain[0]); // add new and re-add 3
+                self.grid.splice(7,0,remain[1]); // re-add 7
+                self.grid.splice(11,0,remain[2]); // re-add 11
+                self.grid.push(currentRow[i+1]); // pop 15 back
 
               } else if (remain[1]){ // row 3
-                gridTemp.splice(3,1); // remove 3
-                gridTemp.splice(6,1); // remove 7
-                gridTemp.splice(0,0,a,b,c,remain[0]);  // add new and re-add 3
-                gridTemp.splice(7,0,remain[1]);  // re-add 7
-                gridTemp.push(currentRow[i+1]); // pop 11 back
+                self.grid.splice(3,1); // remove 3
+                self.grid.splice(6,1); // remove 7
+                self.grid.splice(0,0,a,b,c,remain[0]);  // add new and re-add 3
+                self.grid.splice(7,0,remain[1]);  // re-add 7
+                self.grid.push(currentRow[i+1]); // pop 11 back
 
               } else if (remain[0]){ // row 2
-                gridTemp.splice(3,1);  // remove 3
-                gridTemp.splice(0,0,a,b,c,remain[0]); // add new and re-add 3
-                gridTemp.push(currentRow[i+1]); // pop 7 back
-              } else if (!gridTemp){
-                gridTemp.push(a,b,c,currentRow[i+1]);
+                self.grid.splice(3,1);  // remove 3
+                self.grid.splice(0,0,a,b,c,remain[0]); // add new and re-add 3
+                self.grid.push(currentRow[i+1]); // pop 7 back
+              } else if (!self.grid){
+                self.grid.push(a,b,c,currentRow[i+1]);
               }
             }
           }
           else if (paircount === 1){
-            gridTemp.push(currentRow[i-2],currentRow[i-1],currentRow[i],currentRow[i+1]);
+            self.grid.push(currentRow[i-2],currentRow[i-1],currentRow[i],currentRow[i+1]);
           }
           else if (paircount === 0){
-            gridTemp.push(currentRow[i-2],currentRow[i-1],currentRow[i],currentRow[i+1]);
+            self.grid.push(currentRow[i-2],currentRow[i-1],currentRow[i],currentRow[i+1]);
           }
         }
       }
@@ -385,7 +379,7 @@ game = {
       game.reCheckRow = false;
     }
 
-    self.grid = gridTemp;
+    // self.grid = self.grid;
   },
   checkColsForWinL1: function(){
     // After rows have been checked, time to check the colums for matches!
@@ -538,8 +532,8 @@ game = {
 
     $.each($('li'), function(i, li){
       setTimeout(function(){
-        $(li).removeClass("red blue yellow").addClass(self.grid[i]);
-      },1000);
+        $(li).removeClass("red blue yellow selected").addClass(self.grid[i]);
+      },500);
     });
   },
   updateGridL2: function (){
@@ -547,8 +541,8 @@ game = {
 
     $.each($('li'), function(i, li){
       setTimeout(function(){
-        $(li).removeClass("red blue yellow purple").addClass(self.grid[i]);
-      },1000);
+        $(li).removeClass("red blue yellow purple selected").addClass(self.grid[i]);
+      },500);
     });
   },
   checkBoard: function(){
@@ -556,7 +550,8 @@ game = {
     if (game.currentLevel === 1){
 
       // If reached points count, move to next level
-      if (game.score >= 70) {
+      if (game.score >= 20) {
+        $('#board').hide();
         game.clearBoard();
         game.l1Score = game.score;
         game.init(2); // level 2
@@ -568,9 +563,9 @@ game = {
       }
     } else if (game.currentLevel === 2){
       game.checkRowsForWinL2();
-      setTimeout(game.updateGridL2(),1000);
+      game.updateGridL2();
       game.checkColsForWinL2();
-      setTimeout(game.updateGridL2(),1000);
+      game.updateGridL2();
     }
 
     if (game.reCheckRow === true || game.reCheckCol === true ){
