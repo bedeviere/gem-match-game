@@ -2,8 +2,10 @@ var game = game || {};
 
 game = {
   init: function(level) {
-    // this.currentLevel = level; //  CURRENT LEVEL!!
-    this.currentLevel = 2; //  CURRENT LEVEL!!
+
+    game.gameActive = true;
+    this.currentLevel = level; //  CURRENT LEVEL!!
+    // this.currentLevel = 2; //  CURRENT LEVEL!!
 
     this.$levelDisplay = $('#level').text(this.currentLevel);
     $('#board').addClass("level"+this.currentLevel);
@@ -12,7 +14,7 @@ game = {
 
     this.generateGrid();
 
-    var $ul = $('ul');
+    // var $ul = $('ul');
 
     this.score = 0;
     this.$scoreBoard = $('#score').text(this.score);
@@ -27,6 +29,42 @@ game = {
     this.bClass = "";
     this.tempClass = "";
 
+    // $.each(this.grid, function(i, cellClass){
+    //   $ul.append("<li id='"+ i +"' class='"+ cellClass +"'></li>");
+    // });
+    //
+    // //   add click listener
+    // $('li').on('click', function(){
+    //   // $(this).addClass('selected'); // messes up the currentClass
+    //   this.cellIndex = parseFloat(this.id);
+    //   game.updateClickCounter(this);
+    // });
+    //
+    // this.checkRowsForWin(); // random generator might create matches on setup
+  },
+  generateGrid: function(){
+    this.grid =[];
+    this.choice = "";
+
+    if (this.currentLevel === 1){
+      this.numCells = 9;
+      this.colors = ["yellow","blue","red"];
+    } else if (this.currentLevel === 2){
+      // this.numCells = (16 - 9); // for going up a level !!
+      this.numCells = (16);
+      this.colors = ["yellow","blue","red","purple"];
+    }
+
+    for (var i=0;i<this.numCells;i++){
+      var randCol = [Math.floor(Math.random() * this.colors.length)];
+      this.choice = this.colors[randCol];
+      this.grid.push(this.colors[randCol]);
+    }
+
+    // TESTING start
+    var $ul = $('ul');
+
+
     $.each(this.grid, function(i, cellClass){
       $ul.append("<li id='"+ i +"' class='"+ cellClass +"'></li>");
     });
@@ -39,43 +77,28 @@ game = {
     });
 
     this.checkRowsForWin(); // random generator might create matches on setup
-  },
-  generateGrid: function(){
-    this.grid =[];
-    this.choice = "";
-
-    if (this.currentLevel === 1){
-      this.numCells = 9;
-      this.colors = ["yellow","blue","red"];
-    } else if (this.currentLevel === 2){
-      // this.numCells = (16 - 9);
-      this.numCells = (16);
-      this.colors = ["yellow","blue","red","purple"];
-    }
-
-    for (var i=0;i<this.numCells;i++){
-      var randCol = [Math.floor(Math.random() * this.colors.length)];
-      this.choice = this.colors[randCol];
-      this.grid.push(this.colors[randCol]);
-    }
+    // TESTING end
   },
   startTimer: function(){
-      $timerDiv = $('#timer');
-      var time = 60;
+    $timerDiv = $('#timer');
+    var time = 10;
 
-      var t = setInterval(function() {
-        time--;
-        $timerDiv.text('Time left: '+time);
+    var t = setInterval(function() {
+      time--;
+      $timerDiv.text('Time left: '+time);
 
-        if(time === 0) {
-          clearTimeout(t);
-
-          $timerDiv.text("GAME OVER");
-        }
-      }, 1000);
+      if(time === 0) {
+        clearTimeout(t);
+        game.gameActive = false;
+        $timerDiv.html("GAME OVER!<p>Top score: "+game.score+"</p>");
+      }
+    }, 1000);
   },
   updateClickCounter: function(e){
 
+    if (!game.gameActive) {
+      return;
+    }
     this.currentClass = e.className;
     this.cellIndex = parseFloat(e.id);
 
@@ -113,6 +136,7 @@ game = {
     }
   },
   updateGridDisplay : function(){
+
     this.tempClass = this.aClass;
     this.a.className = this.bClass;
     this.b.className = this.tempClass;
@@ -620,5 +644,5 @@ game = {
 };
 
 $(function(){
-  game.init(1);
+  game.init(2);
 });
