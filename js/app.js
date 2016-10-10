@@ -74,11 +74,13 @@ game = {
     game.t = setInterval(function() {
       game.time--;
       $timerDiv.text('Time left: '+game.time);
+      if (game.time < 10){$('#countDown').html(game.time);}
 
       if(game.time === 0) {
         clearTimeout(game.t);
         game.gameActive = false;
         $timerDiv.html("GAME OVER!");
+        $('li').addClass('disabled');
         $highScores.append('<p>'+game.score+'</p>');
       }
     }, 1000);

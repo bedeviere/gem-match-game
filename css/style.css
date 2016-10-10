@@ -7,9 +7,16 @@
   display: inline-block;
   vertical-align: top;
 }
+#countDown {
+  position: absolute;
+  top: 81px;
+  left: 430px;
+  font-size: 400px;
+  text-align: center;
+  z-index: -1;
+}
 #board {
-  /*border: 1px solid black;*/
-  /*padding: 20px;*/
+  z-index: 1;
 }
 #controlPanel {
   width: 200px;
@@ -24,11 +31,11 @@
   width:420px;
 }
 .level1 {
-  width: 300px;
+  width: 330px;
   height: 330px;
-  margin: 70px 70px;
+  margin: 90px 50px;
   background-color: rgba(246,231,202,0.6);
-  padding: 40px;
+  padding: 30px 20px 40px 50px;
   border-radius: 10px;
 }
 .level2 {
