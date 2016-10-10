@@ -5,15 +5,14 @@ game = {
     game.gameActive = true;
     this.currentLevel = level; //  CURRENT LEVEL!!
 
-    this.$levelDisplay = $('#level').text(this.currentLevel);
+    var $levelDisplay = $('#level').text(this.currentLevel);
     $('#board').removeClass("level1 level2").addClass("level"+this.currentLevel);
 
-    this.generateGrid(level);
 
     this.time = 0;
     game.l1Score ? game.score = game.l1Score : game.score = 0;
     this.$scoreBoard = $('#score').text(this.score);
-    this.clickCounter = 0;
+    this.clickCounter = -1;
     this.a = ""; // id of 1st selected cell
     this.b = "";
     this.aIndex = ""; // index of 1st selected cell
@@ -22,70 +21,70 @@ game = {
     this.bClass = "";
     this.tempClass = "";
 
-    $('#resetBtn').off('click').on('click', function(){
-      game.score = 0;
-      game.l1Score = 0;
-      game.clearBoard();
-      game.init(1);
-    });
-
-
-    var $ul = $('ul');
-    $.each(this.grid, function(i, cellClass){
-      $ul.append("<li id='"+ i +"' class='"+ cellClass +"'></li>");
-    });
-
-    //   add click listener
-    $('li').on('click', function(){
-      this.cellIndex = parseFloat(this.id);
-      game.updateClickCounter(this);
-    });
-
+    this.generateBoard(level);
+    this.addBoardClickEvent();
+    this.addBoardResetEvent();
     this.checkBoard();
 
   },
-  clearBoard: function(){
-    return $('ul').empty();
-  },
-  generateGrid: function(level){
+  generateBoard: function(level){
     this.grid =[];
     var choice = "";
 
     if (level === 1){
-      this.startTimer(20);
       this.numCells = 9;
       this.colors = ["yellow","blue","red"];
     } else if (level === 2){
-      this.startTimer(30);
+      this.startTimer(45);
       this.clearBoard();
       this.numCells = 16;
       this.colors = ["yellow","blue","red","purple"];
     }
 
     for (var i=0;i<this.numCells;i++){
+
       var randCol = [Math.floor(Math.random() * this.colors.length)];
       choice = this.colors[randCol];
       this.grid.push(this.colors[randCol]);
     }
 
+    var $ul = $('ul');
+    $.each(this.grid, function(i, cellClass){
+      $ul.append("<li id='"+ i +"' class='"+ cellClass +"'></li>");
+    });
+  },
+  addBoardClickEvent: function(){
+    $('li').on('click', function(){
+      game.updateClickCounter(this);
+    });
+  },
+  addBoardResetEvent: function(){
+    $('#resetBtn').off('click').on('click', function(){
+      game.score = 0;
+      game.l1Score = 0;
+      game.clearBoard();
+      game.init(1);
+    });
+  },
+  clearBoard: function(){
+    return $('ul').empty();
   },
   startTimer: function(seconds){
-    clearTimeout(this.t);
+    clearTimeout(game.t);
 
     $timerDiv = $('#timer');
     $highScores = $('#highScores');
-    var time = seconds;
+    game.time = seconds;
 
-    this.t = setInterval(function() {
-      time--;
-      $timerDiv.text('Time left: '+time);
+    game.t = setInterval(function() {
+      game.time--;
+      $timerDiv.text('Time left: '+game.time);
 
-      if(time === 0) {
+      if(game.time === 0) {
         clearTimeout(game.t);
         game.gameActive = false;
-        $timerDiv.html("GAME OVER!<p>Score: "+game.score+"</p>");
+        $timerDiv.html("GAME OVER!");
         $highScores.append('<p>'+game.score+'</p>');
-        // alert("Game over");
       }
     }, 1000);
   },
@@ -94,18 +93,23 @@ game = {
     if (!game.gameActive) {
       return;
     }
-    this.currentClass = e.className;
+    var currentClass = e.className;
     this.cellIndex = parseFloat(e.id);
 
     this.clickCounter ++;
 
+    if (this.clickCounter === 0){ // Set timer to start on first cell click
+      this.startTimer(30);
+      this.clickCounter ++;
+    }
+
     if (this.clickCounter === 1){
-      this.aClass = this.currentClass;
+      this.aClass = currentClass;
       this.aIndex = this.cellIndex;
       this.a = e;
 
-    } else if (this.clickCounter >= 2) {
-      this.bClass = this.currentClass;
+    } else if (this.clickCounter === 2) {
+      this.bClass = currentClass;
       this.bIndex = this.cellIndex;
       this.b = e;
 
@@ -115,23 +119,22 @@ game = {
         {
           this.updateGridDisplay();
         }
-        else {
-          console.log("NO MOVE");
-        }
+        // else {
+        //   console.log("NO MOVE");
+        // }
       } else if (this.currentLevel === 2){
         if (this.bIndex === this.aIndex + 4 || this.bIndex === this.aIndex -4 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
         {
           this.updateGridDisplay();
         }
-        else {
-          console.log("NO MOVE");
-        }
+        // else {
+        //   console.log("NO MOVE");
+        // }
       }
       this.clickCounter = 0;
     }
   },
   updateGridDisplay : function(){
-
     this.tempClass = this.aClass;
     this.a.className = this.bClass;
     this.b.className = this.tempClass;
@@ -140,10 +143,9 @@ game = {
   updateGridArray: function (){
     this.grid.splice(this.aIndex,1,this.bClass);
     this.grid.splice(this.bIndex,1,this.aClass);
-    this.row1 = this.grid.slice(0,3);
-    this.row2 = this.grid.slice(3,6);
-    this.row3 = this.grid.slice(6,9);
-    // this.checkRowsForWin();
+    this.row1 = this.grid.slice(0,3); // needed?
+    this.row2 = this.grid.slice(3,6); // needed?
+    this.row3 = this.grid.slice(6,9); // needed?
     this.checkBoard();
   },
   randCol: function(){
@@ -275,7 +277,8 @@ game = {
 
             // Update score and scoreboard
             match = true;
-            game.score += 15;
+            game.score += 20;
+            game.time += 1;
             game.$scoreBoard.text(game.score);
           }
           else if (paircount === 2){
@@ -289,8 +292,6 @@ game = {
               match = true;
               game.score += 10;
               game.$scoreBoard.text(game.score);
-              // console.log("REMOVE row.... ");
-              // console.log("Update score.... ");
 
               a = game.randCol();
               b = game.randCol();
@@ -384,7 +385,6 @@ game = {
       game.reCheckRow = false;
     }
 
-    // console.log("Temp Grid: "+gridTemp);
     self.grid = gridTemp;
   },
   checkColsForWinL1: function(){
@@ -486,7 +486,8 @@ game = {
 
             // Update score and scoreboard
             match = true;
-            game.score += 15;
+            game.score += 20;
+            game.time += 1;
           }
           else if (paircount === 2){
             // Update score and scoreboard
@@ -536,7 +537,9 @@ game = {
     var self = this;
 
     $.each($('li'), function(i, li){
-      $(li).removeClass("red blue yellow").addClass(self.grid[i]);
+      setTimeout(function(){
+        $(li).removeClass("red blue yellow").addClass(self.grid[i]);
+      },1000);
     });
   },
   updateGridL2: function (){
@@ -553,15 +556,15 @@ game = {
     if (game.currentLevel === 1){
 
       // If reached points count, move to next level
-      if (game.score >= 100) {
+      if (game.score >= 70) {
         game.clearBoard();
         game.l1Score = game.score;
         game.init(2); // level 2
       } else {
         game.checkRowsForWinL1();
-        setTimeout(game.updateGridL1(),1000);
+        game.updateGridL1();
         game.checkColsForWinL1();
-        setTimeout(game.updateGridL1(),1000);
+        game.updateGridL1();
       }
     } else if (game.currentLevel === 2){
       game.checkRowsForWinL2();
