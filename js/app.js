@@ -2,19 +2,18 @@ var game = game || {};
 
 game = {
   init: function(level) {
-
+    console.log("init called");
     game.gameActive = true;
     this.currentLevel = level; //  CURRENT LEVEL!!
     // this.currentLevel = 2; //  CURRENT LEVEL!!
 
     this.$levelDisplay = $('#level').text(this.currentLevel);
-    $('#board').addClass("level"+this.currentLevel);
+    $('#board').removeClass("level1 level2").addClass("level"+this.currentLevel);
 
-    this.startTimer();
 
-    this.generateGrid();
+    // this.startTimer();
+    this.generateGrid(level);
 
-    // var $ul = $('ul');
 
     this.score = 0;
     this.$scoreBoard = $('#score').text(this.score);
@@ -29,27 +28,40 @@ game = {
     this.bClass = "";
     this.tempClass = "";
 
-    // $.each(this.grid, function(i, cellClass){
-    //   $ul.append("<li id='"+ i +"' class='"+ cellClass +"'></li>");
-    // });
-    //
-    // //   add click listener
-    // $('li').on('click', function(){
-    //   // $(this).addClass('selected'); // messes up the currentClass
-    //   this.cellIndex = parseFloat(this.id);
-    //   game.updateClickCounter(this);
-    // });
-    //
-    // this.checkRowsForWin(); // random generator might create matches on setup
-  },
-  generateGrid: function(){
-    this.grid =[];
-    this.choice = "";
+    $('#resetBtn').off('click').on('click', function(){
+      console.log("clicked");
+      game.clearBoard();
+      console.log("cleared board");
+      game.init(1); // NOT WORKING
+    });
 
-    if (this.currentLevel === 1){
+
+    var $ul = $('ul');
+    $.each(this.grid, function(i, cellClass){
+      $ul.append("<li id='"+ i +"' class='"+ cellClass +"'></li>");
+    });
+
+    //   add click listener
+    $('li').on('click', function(){
+      this.cellIndex = parseFloat(this.id);
+      game.updateClickCounter(this);
+    });
+
+    this.checkRowsForWin(); // random generator might create matches on setup
+
+  },
+  clearBoard: function(){
+    return $('ul').empty();
+  },
+  generateGrid: function(level){
+    this.grid =[];
+    var choice = "";
+
+    if (level === 1){
       this.numCells = 9;
       this.colors = ["yellow","blue","red"];
-    } else if (this.currentLevel === 2){
+    } else if (level === 2){
+      this.clearBoard();
       // this.numCells = (16 - 9); // for going up a level !!
       this.numCells = (16);
       this.colors = ["yellow","blue","red","purple"];
@@ -57,27 +69,10 @@ game = {
 
     for (var i=0;i<this.numCells;i++){
       var randCol = [Math.floor(Math.random() * this.colors.length)];
-      this.choice = this.colors[randCol];
+      choice = this.colors[randCol];
       this.grid.push(this.colors[randCol]);
     }
 
-    // TESTING start
-    var $ul = $('ul');
-
-
-    $.each(this.grid, function(i, cellClass){
-      $ul.append("<li id='"+ i +"' class='"+ cellClass +"'></li>");
-    });
-
-    //   add click listener
-    $('li').on('click', function(){
-      // $(this).addClass('selected'); // messes up the currentClass
-      this.cellIndex = parseFloat(this.id);
-      game.updateClickCounter(this);
-    });
-
-    this.checkRowsForWin(); // random generator might create matches on setup
-    // TESTING end
   },
   startTimer: function(){
     $timerDiv = $('#timer');
@@ -91,6 +86,7 @@ game = {
         clearTimeout(t);
         game.gameActive = false;
         $timerDiv.html("GAME OVER!<p>Top score: "+game.score+"</p>");
+        // alert("Game over");
       }
     }, 1000);
   },
@@ -594,7 +590,8 @@ game = {
       });
 
       // If reached points count, move to next level
-      if (game.score >= 100) {
+      if (game.score >= 30) {
+        game.clearBoard();
         game.init(2); // level 2
       }
 
@@ -644,5 +641,5 @@ game = {
 };
 
 $(function(){
-  game.init(2);
+  game.init(1);
 });
