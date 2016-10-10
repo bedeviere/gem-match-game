@@ -10,15 +10,11 @@ game = {
     this.$levelDisplay = $('#level').text(this.currentLevel);
     $('#board').removeClass("level1 level2").addClass("level"+this.currentLevel);
 
-
-    // this.startTimer();
     this.generateGrid(level);
 
-
+    this.time = 0;
     this.score = 0;
     this.$scoreBoard = $('#score').text(this.score);
-
-    // var $timer = $('timer');
     this.clickCounter = 0;
     this.a = ""; // id of 1st selected cell
     this.b = "";
@@ -29,10 +25,8 @@ game = {
     this.tempClass = "";
 
     $('#resetBtn').off('click').on('click', function(){
-      console.log("clicked");
       game.clearBoard();
-      console.log("cleared board");
-      game.init(1); // NOT WORKING
+      game.init(1);
     });
 
 
@@ -58,11 +52,14 @@ game = {
     var choice = "";
 
     if (level === 1){
+      // this.timerStatus="start";
+      this.startTimer(15);
       this.numCells = 9;
       this.colors = ["yellow","blue","red"];
     } else if (level === 2){
+      this.stopTimer();
+      this.startTimer(30);
       this.clearBoard();
-      // this.numCells = (16 - 9); // for going up a level !!
       this.numCells = (16);
       this.colors = ["yellow","blue","red","purple"];
     }
@@ -74,21 +71,25 @@ game = {
     }
 
   },
-  startTimer: function(){
-    $timerDiv = $('#timer');
-    var time = 10;
+  startTimer: function(seconds){
 
-    var t = setInterval(function() {
+    $timerDiv = $('#timer');
+    var time = seconds;
+
+    this.t = setInterval(function() {
       time--;
       $timerDiv.text('Time left: '+time);
 
       if(time === 0) {
-        clearTimeout(t);
+        clearTimeout(this.t);
         game.gameActive = false;
         $timerDiv.html("GAME OVER!<p>Top score: "+game.score+"</p>");
         // alert("Game over");
       }
     }, 1000);
+  },
+  stopTimer: function(){
+    return clearTimeout(this.t);
   },
   updateClickCounter: function(e){
 
@@ -592,6 +593,10 @@ game = {
       // If reached points count, move to next level
       if (game.score >= 30) {
         game.clearBoard();
+
+        // this.timerStatus="stop";
+        // this.startTimer(1);
+        // game.stopTimer();
         game.init(2); // level 2
       }
 
