@@ -6,6 +6,7 @@ game = {
     game.gameActive = true;
     this.currentLevel = level; //  CURRENT LEVEL!!
 
+
     var $levelDisplay = $('#level').text(this.currentLevel);
     $('#board').removeClass("level1 level2").addClass("level"+this.currentLevel);
 
@@ -100,8 +101,15 @@ game = {
   },
   playSound: function(soundEffect){
     var $sound = $('#sound');
+
+    if (soundEffect === "background-music"){
+      // $sound[0].controls=true;
+      $sound[0].autoplay='autoplay';
+    }
+
     $sound[0].src='../media/audio/'+soundEffect+'.mp3';
     $sound[0].play();
+
   },
   updateClickCounter: function(e){
 
@@ -132,12 +140,11 @@ game = {
       if (this.currentLevel === 1){
         if (this.bIndex === this.aIndex + 3 || this.bIndex === this.aIndex -3 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
         {
-          // this.playSound('valid');
           this.updateGridDisplay();
         }
         else {
           e.className+=" animated shake";
-            this.playSound('invalid');
+          this.playSound('invalid');
           setTimeout(function(){
             $('li').removeClass('animated').removeClass('shake');
           },1000);
@@ -146,12 +153,11 @@ game = {
       } else if (this.currentLevel === 2){
         if (this.bIndex === this.aIndex + 4 || this.bIndex === this.aIndex -4 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
         {
-          // this.playSound('valid');
           this.updateGridDisplay();
         }
         else {
           e.className+=" animated shake";
-            this.playSound('invalid');
+          this.playSound('invalid');
           setTimeout(function(){
             $('li').removeClass('animated').removeClass('shake');
           },1000);
@@ -705,5 +711,6 @@ game = {
 };
 
 $(function(){
+  game.playSound("background-music");
   game.init(1);
 });
