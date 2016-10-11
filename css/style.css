@@ -1,23 +1,26 @@
 body {
   background-image: url('../media/img/background.jpg');
   /*background-image: url('../media/img/beauty.jpg');*/
-  /*background-size: cover;*/
   background-repeat: no-repeat;
   background-position: center;
+}
+@font-face {
+  font-family: "Busorama";
+  src: url("../fonts/busorama.ttf");
 }
 .container {
   width: 860px;
   margin: 0 auto;
 }
 h1, h2, h3 {
-  font-family: 'Architects Daughter', cursive;
+  font-family: 'Busorama', cursive;
   text-align: center;
   line-height: 14px;
 }
 p {
   font-family: 'Raleway', sans-serif;
 }
-.levelUp {
+.levelUp, .gameOver {
   background-color: rgba(246,231,202,0.7);
   position: fixed;
   top: 0;
@@ -27,12 +30,13 @@ p {
   z-index: 10;
   display: none;
 }
-.levelUpText {
+.levelUpText, .gameOverText {
   position: absolute;
+  width: 100%;
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
-  font-size: 90px;
+  font-size: 75px;
 }
 #controlPanel {
   width: 290px;
@@ -46,7 +50,7 @@ p {
   /*background-color: rgba(246,231,202,0.7);*/
 }
 #countDown {
-  font-family: 'Architects Daughter', cursive;
+  font-family: 'Busorama', cursive;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -125,6 +129,9 @@ p {
   display: inline-block;
   position: relative;
 }
+#highScores {
+  text-align: center;
+}
 .level {
   position: absolute;
   bottom: 20px;
@@ -137,8 +144,6 @@ p {
   height: 30px;
   width: 30px;
   background-size: contain;
-  /*border: 1px solid grey;*/
-  /*border-radius: 50%;*/
 }
 .level p {
   margin-left: 11px;
@@ -186,7 +191,7 @@ ul li {
   background-repeat: no-repeat;
   background-size: cover;
 }
-.green {
+/*.green {
   background-image: url('../media/img/element_green_diamond_glossy.png');
   background-repeat: no-repeat;
   background-size: cover;
@@ -195,7 +200,7 @@ ul li {
   background-image: url('../media/img/element_grey_diamond_glossy.png');
   background-repeat: no-repeat;
   background-size: cover;
-}
+}*/
 .selected {
   opacity: 0.2;
 }

@@ -80,6 +80,13 @@ game = {
       }
 
       if(game.time === 0) {
+        $('.gameOver').show().addClass('animated bounceIn');
+        setTimeout(function(){
+          $('.gameOver').addClass('animated zoomOut');
+          setTimeout(function(){
+            $('.gameOver').hide();
+          },500);
+        },1000);
         clearTimeout(game.t);
         game.gameActive = false;
         $('li').addClass('disabled');
@@ -92,11 +99,9 @@ game = {
     }, 1000);
   },
   playSound: function(soundEffect){
-
-    // var $sound = $('#sound');
-    //
-    // $sound.src="../media/audio/blop.mp3";
-    // $sound.get(0).play();
+    var $sound = $('#sound');
+    $sound[0].src="../media/audio/invalid.mp3";
+    $sound[0].play();
   },
   updateClickCounter: function(e){
 
@@ -127,7 +132,7 @@ game = {
       if (this.currentLevel === 1){
         if (this.bIndex === this.aIndex + 3 || this.bIndex === this.aIndex -3 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
         {
-          // this.playSound('valid');
+          this.playSound('invalid');
           this.updateGridDisplay();
         }
         else {
@@ -140,7 +145,7 @@ game = {
       } else if (this.currentLevel === 2){
         if (this.bIndex === this.aIndex + 4 || this.bIndex === this.aIndex -4 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
         {
-          // this.playSound('valid');
+          this.playSound('invalid');
           this.updateGridDisplay();
         }
         else {
@@ -223,7 +228,7 @@ game = {
       }
     }
 
-    
+
     $(str1).addClass('animated zoomOut');
     $(str2).addClass('animated zoomOut');
     $(str3).addClass('animated zoomOut');
@@ -652,6 +657,7 @@ game = {
     });
   },
   checkBoard: function(){
+    var progress;
 
     if (game.currentLevel === 1){
 
@@ -670,16 +676,22 @@ game = {
         game.init(2); // level 2
       } else {
         game.checkRowsForWinL1();
-        var progress = ((game.score/200)*100);
+        progress = ((game.score/200)*100);
         $('.progressBar').width(progress+'%');
         game.updateGridL1();
         game.checkColsForWinL1();
+        progress = ((game.score/200)*100);
+        $('.progressBar').width(progress+'%');
         game.updateGridL1();
       }
     } else if (game.currentLevel === 2){
       game.checkRowsForWinL2();
+      progress = ((game.score/500)*100);
+      $('.progressBar').width(progress+'%');
       game.updateGridL2();
       game.checkColsForWinL2();
+      progress = ((game.score/500)*100);
+      $('.progressBar').width(progress+'%');
       game.updateGridL2();
     }
 
