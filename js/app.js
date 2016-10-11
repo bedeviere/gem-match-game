@@ -2,6 +2,7 @@ var game = game || {};
 
 game = {
   init: function(level) {
+    this.highScores = [];
     game.gameActive = true;
     this.currentLevel = level; //  CURRENT LEVEL!!
 
@@ -16,7 +17,6 @@ game = {
     this.generateBoard(level);
     this.addClickListeners();
     this.checkBoard();
-
   },
   generateBoard: function(level){
     this.grid =[];
@@ -59,6 +59,8 @@ game = {
     });
   },
   clearBoard: function(){
+
+    $('#countDown').html("");
     $('#board').hide();
     return $('ul').empty();
   },
@@ -71,15 +73,21 @@ game = {
 
     game.t = setInterval(function() {
       game.time--;
-      $timerDiv.text('Time left: '+game.time);
-      if (game.time < 10){$('#countDown').html(game.time);}
+      $timerDiv.text('0:'+game.time);
+      if (game.time < 10){
+        $timerDiv.text('0:0'+game.time);
+        $('#countDown').html(game.time);
+      }
 
       if(game.time === 0) {
         clearTimeout(game.t);
         game.gameActive = false;
-        $timerDiv.html("GAME OVER!");
         $('li').addClass('disabled');
-        $highScores.append('<p>'+game.score+'</p>');
+        game.highScores.push(game.score);
+        game.highScores.sort().reverse();
+        game.highScores.forEach(function(score) {
+          $highScores.append('<p>'+score+'</p>');
+        });
       }
     }, 1000);
   },
@@ -176,27 +184,46 @@ game = {
     var str3 = "";
     var str4 = "";
 
-    if (rowI === 0) {
-      col1==="" ? str1="": str1 = "li#" + col1;
-      str2 = "li#" + col2;
-      str3 = "li#" + col3;
-      col4==="" ? str4="": str4 = "li#" + col4;
-    } else if(rowI === 1){
-      col1==="" ? str1="": str1 = "li#" + (col1+4);
-      str2 = "li#" + (col2+4);
-      str3 = "li#" + (col3+4);
-      col4==="" ? str4="": str4 = "li#" + (col4+4);
-    } else if (rowI === 2){
-      col1==="" ? str1="": str1 = "li#" + (col1+8);
-      str2 = "li#" + (col2+8);
-      str3 = "li#" + (col3+8);
-      col4==="" ? str4="": str4 = "li#" + (col4+8);
-    } else if (rowI === 3){
-      col1==="" ? str1="": str1 = "li#" + (col1+12);
-      str2 = "li#" + (col2+12);
-      str3 = "li#" + (col3+12);
-      col4==="" ? str4="": str4 = "li#" + (col4+12);
+    if (game.currentLevel === 2){
+      if (rowI === 0) {
+        col1==="" ? str1="": str1 = "li#" + col1;
+        str2 = "li#" + col2;
+        str3 = "li#" + col3;
+        col4==="" ? str4="": str4 = "li#" + col4;
+      } else if(rowI === 1){
+        col1==="" ? str1="": str1 = "li#" + (col1+4);
+        str2 = "li#" + (col2+4);
+        str3 = "li#" + (col3+4);
+        col4==="" ? str4="": str4 = "li#" + (col4+4);
+      } else if (rowI === 2){
+        col1==="" ? str1="": str1 = "li#" + (col1+8);
+        str2 = "li#" + (col2+8);
+        str3 = "li#" + (col3+8);
+        col4==="" ? str4="": str4 = "li#" + (col4+8);
+      } else if (rowI === 3){
+        col1==="" ? str1="": str1 = "li#" + (col1+12);
+        str2 = "li#" + (col2+12);
+        str3 = "li#" + (col3+12);
+        col4==="" ? str4="": str4 = "li#" + (col4+12);
+      }
+    } else if (game.currentLevel === 1){
+
+      if (rowI === 0) {
+        str1 = "li#" + col1;
+        str2 = "li#" + col2;
+        str3 = "li#" + col3;
+      } else if(rowI === 1){
+        str1 = "li#" + (col1+3);
+        str2 = "li#" + (col2+3);
+        str3 = "li#" + (col3+3);
+      } else if (rowI === 2){
+        str1 = "li#" + (col1+6);
+        str2 = "li#" + (col2+6);
+        str3 = "li#" + (col3+6);
+      }
     }
+
+    
     $(str1).addClass('animated zoomOut');
     $(str2).addClass('animated zoomOut');
     $(str3).addClass('animated zoomOut');
@@ -207,7 +234,7 @@ game = {
       $(str2).removeClass('animated zoomOut');
       $(str3).removeClass('animated zoomOut');
       $(str4).removeClass('animated zoomOut');
-    },1000);
+    },500);
   },
   animateOutCol: function(colI,col1,col2,col3,col4){
 
@@ -236,7 +263,7 @@ game = {
     game.reCheckRow = false;
     this.checkCols = true;
 
-    rowsToCheck.forEach(function(currentRow, i){
+    rowsToCheck.forEach(function(currentRow, rowI){
       paircount = 0;
       // Check cols within row
       for (var i = 0; i < numCols; i++){
@@ -251,6 +278,8 @@ game = {
           // Update score and scoreboard
           game.score += 10;
           game.$scoreBoard.text(game.score);
+
+          game.animateOutRow(rowI,i-1,i,i+1,"");
 
           // set it to recheck rows
           match = true;
@@ -627,12 +656,12 @@ game = {
     if (game.currentLevel === 1){
 
       // If reached points count, move to next level
-      if (game.score >= 20) {
+      if (game.score >= 200) {
         $('.levelUp').show().addClass('animated bounceIn');
         setTimeout(function(){
           $('.levelUp').addClass('animated zoomOut');
           setTimeout(function(){
-                $('.levelUp').hide();
+            $('.levelUp').hide();
           },500);
         },1000);
 
@@ -641,6 +670,8 @@ game = {
         game.init(2); // level 2
       } else {
         game.checkRowsForWinL1();
+        var progress = ((game.score/200)*100);
+        $('.progressBar').width(progress+'%');
         game.updateGridL1();
         game.checkColsForWinL1();
         game.updateGridL1();
