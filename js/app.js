@@ -172,6 +172,45 @@ game = {
     var choice = colors[randNum];
     return choice;
   },
+  animateOut: function(rowI,col1,col2,col3,col4){
+    var str1 = "";
+    var str2 = "";
+    var str3 = "";
+    var str4 = "";
+
+    if (rowI === 0) {
+      col1==="" ? str1="": str1 = "li#" + col1;
+      str2 = "li#" + col2;
+      str3 = "li#" + col3;
+      col4==="" ? str4="": "li#" + col4;
+    } else if(rowI === 1){
+      col1==="" ? str1="": str1 = "li#" + (col1+4);
+      str2 = "li#" + (col2+4);
+      str3 = "li#" + (col3+4);
+      col4==="" ? str4="": str4 = "li#" + (col4+4);
+    } else if (rowI === 2){
+      col1==="" ? str1="": str1 = "li#" + (col1+8);
+      str2 = "li#" + (col2+8);
+      str3 = "li#" + (col3+8);
+      col4==="" ? str4="": str4 = "li#" + (col4+8);
+    } else if (rowI === 3){
+      col1==="" ? str1="": str1 = "li#" + (col1+12);
+      str2 = "li#" + (col2+12);
+      str3 = "li#" + (col3+12);
+      col4==="" ? str4="": str4 = "li#" + (col4+12);
+    }
+    $(str1).addClass('animated zoomOut');
+    $(str2).addClass('animated zoomOut');
+    $(str3).addClass('animated zoomOut');
+    $(str4).addClass('animated zoomOut');
+
+    setTimeout(function(){
+      $(str1).removeClass('animated zoomOut');
+      $(str2).removeClass('animated zoomOut');
+      $(str3).removeClass('animated zoomOut');
+      $(str4).removeClass('animated zoomOut');
+    },1000);
+  },
   checkRowsForWinL1: function() {
     var numRows= 0;
     var numCols = 0;
@@ -271,7 +310,9 @@ game = {
     var match = false;
 
     rowsToCheck.forEach(function(currentRow, rowI){
+      // var str ="";
       paircount = 0;
+
       for (var i = 0; i < numCols; i++){
         if (currentRow[i] === currentRow[i+1]){
           paircount++;
@@ -279,6 +320,10 @@ game = {
 
         if (i === 2){
           if (paircount === 3){
+
+            // Add animation
+            game.animateOut(rowI,i-2,i-1,i,i+1);
+
             // add 4 new tiles
             a = game.randCol();
             b = game.randCol();
@@ -292,7 +337,7 @@ game = {
             game.updateGridL2();
             game.time += 1;
             game.$scoreBoard.text(game.score);
-            // $('li#' + currentRow[i])
+
           }
           else if (paircount === 2){
 
@@ -301,10 +346,12 @@ game = {
             }
             else if (currentRow[i] === currentRow[i+1]){
 
+              // Add animation
+              game.animateOut(rowI,"",i-1,i,i+1);
+
               // Update score and scoreboard
               match = true;
               game.score += 10;
-              game.updateGridL2();
               game.$scoreBoard.text(game.score);
 
               a = game.randCol();
@@ -343,13 +390,17 @@ game = {
 
               }
 
+              game.updateGridL2();
+
             }
             else {
+
+              // Add animation
+              game.animateOut(rowI,i-2,i-1,i,"");
 
               // Update score and scoreboard
               match = true;
               game.score += 10;
-              game.updateGridL2();
               game.$scoreBoard.text(game.score);
 
               a = game.randCol();
@@ -382,6 +433,8 @@ game = {
               } else if (!self.grid){
                 self.grid.push(a,b,c,currentRow[i+1]);
               }
+
+              game.updateGridL2();
             }
           }
           else if (paircount === 1){
@@ -553,9 +606,7 @@ game = {
 
     $.each($('li'), function(i, li){
       setTimeout(function(){
-        // $(li).fadeTo( 100, 0 );
         $(li).removeClass("red blue yellow selected").addClass(self.grid[i]);
-        // $(li).fadeTo( 100, 1 );
       },500);
 
 
@@ -566,7 +617,7 @@ game = {
 
     $.each($('li'), function(i, li){
       setTimeout(function(){
-        $(li).removeClass("red blue yellow purple selected").addClass(self.grid[i]);
+        $(li).removeClass("red blue yellow purple selected animated zoomOut").addClass(self.grid[i]);
       },500);
     });
   },
