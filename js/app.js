@@ -103,7 +103,6 @@ game = {
     var $sound = $('#sound');
 
     if (soundEffect === "background-music"){
-      // $sound[0].controls=true;
       $sound[0].autoplay='autoplay';
     }
 
@@ -354,7 +353,6 @@ game = {
     var match = false;
 
     rowsToCheck.forEach(function(currentRow, rowI){
-      // var str ="";
       paircount = 0;
 
       for (var i = 0; i < numCols; i++){
@@ -375,7 +373,6 @@ game = {
             d = game.randCol();
 
             self.grid.splice(0,0,a,b,c,d);
-
 
             // Update score and scoreboard
             match = true;
@@ -433,11 +430,8 @@ game = {
                 self.grid.splice(0,0,a,b,c); // add 3 new at start
                 self.grid.splice(0,0,keepMe[0]); // re-add 0
                 self.grid.splice(4,0,currentRow[i-2]); // inject at 4
-
               }
-
               game.updateGridL2();
-
             }
             else {
 
@@ -532,7 +526,6 @@ game = {
           game.score += 10;
           game.$scoreBoard.text(game.score);
 
-          // set it to recheck cols
           game.reCheckCol = true; // Prevents infinite loop of checking
 
           // Set number of new cols needed to be generated
