@@ -14,8 +14,6 @@ game = {
     this.clickCounter = -1;
 
     this.generateBoard(level);
-    // this.addBoardClickEvent();
-    // this.addBoardResetEvent();
     this.addClickListeners();
     this.checkBoard();
 
@@ -172,7 +170,7 @@ game = {
     var choice = colors[randNum];
     return choice;
   },
-  animateOut: function(rowI,col1,col2,col3,col4){
+  animateOutRow: function(rowI,col1,col2,col3,col4){
     var str1 = "";
     var str2 = "";
     var str3 = "";
@@ -182,7 +180,7 @@ game = {
       col1==="" ? str1="": str1 = "li#" + col1;
       str2 = "li#" + col2;
       str3 = "li#" + col3;
-      col4==="" ? str4="": "li#" + col4;
+      col4==="" ? str4="": str4 = "li#" + col4;
     } else if(rowI === 1){
       col1==="" ? str1="": str1 = "li#" + (col1+4);
       str2 = "li#" + (col2+4);
@@ -210,6 +208,9 @@ game = {
       $(str3).removeClass('animated zoomOut');
       $(str4).removeClass('animated zoomOut');
     },1000);
+  },
+  animateOutCol: function(colI,col1,col2,col3,col4){
+
   },
   checkRowsForWinL1: function() {
     var numRows= 0;
@@ -322,14 +323,16 @@ game = {
           if (paircount === 3){
 
             // Add animation
-            game.animateOut(rowI,i-2,i-1,i,i+1);
+            game.animateOutRow(rowI,i-2,i-1,i,i+1);
 
             // add 4 new tiles
             a = game.randCol();
             b = game.randCol();
             c = game.randCol();
             d = game.randCol();
-            self.grid.push(a,b,c,d);
+
+            self.grid.splice(0,0,a,b,c,d);
+
 
             // Update score and scoreboard
             match = true;
@@ -347,7 +350,7 @@ game = {
             else if (currentRow[i] === currentRow[i+1]){
 
               // Add animation
-              game.animateOut(rowI,"",i-1,i,i+1);
+              game.animateOutRow(rowI,"",i-1,i,i+1);
 
               // Update score and scoreboard
               match = true;
@@ -396,7 +399,7 @@ game = {
             else {
 
               // Add animation
-              game.animateOut(rowI,i-2,i-1,i,"");
+              game.animateOutRow(rowI,i-2,i-1,i,"");
 
               // Update score and scoreboard
               match = true;
@@ -608,8 +611,6 @@ game = {
       setTimeout(function(){
         $(li).removeClass("red blue yellow selected").addClass(self.grid[i]);
       },500);
-
-
     });
   },
   updateGridL2: function (){
@@ -627,6 +628,14 @@ game = {
 
       // If reached points count, move to next level
       if (game.score >= 20) {
+        $('.levelUp').show().addClass('animated bounceIn');
+        setTimeout(function(){
+          $('.levelUp').addClass('animated zoomOut');
+          setTimeout(function(){
+                $('.levelUp').hide();
+          },500);
+        },1000);
+
         game.clearBoard();
         game.l1Score = game.score;
         game.init(2); // level 2

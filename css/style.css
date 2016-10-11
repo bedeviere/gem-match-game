@@ -20,7 +20,6 @@
   left: 50%;
   transform: translate(-50%,-50%);
   font-size: 90px;
-  display: none;
 }
 #controlPanel {
   width: 200px;
@@ -42,7 +41,6 @@
 }
 #board {
   z-index: 1;
-  /*transition: all 0.5s ease; // fadeout / fade in*/
 }
 .disableBoard {
   z-index: 5px;
@@ -63,7 +61,7 @@
   background-color: rgba(246,231,202,0.6);
   border-radius: 10px;
   padding: 20px;
-  margin: 70px 30px;
+  margin: 57px 30px;
 }
 #timer {
   margin-top: 30px;
