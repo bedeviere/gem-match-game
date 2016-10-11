@@ -3,9 +3,30 @@
   margin: 0 auto;
   border: 1px solid black;
 }
-.gameBoard {
+
+.levelUp {
+  background-color: rgba(255,255,255,0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  display: none;
+}
+.levelUpText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  font-size: 90px;
+  display: none;
+}
+#controlPanel {
+  width: 200px;
   display: inline-block;
-  vertical-align: top;
+  border: 1px solid black;
+  padding: 20px;
 }
 #countDown {
   position: absolute;
@@ -15,14 +36,13 @@
   text-align: center;
   z-index: -1;
 }
+.gameBoard {
+  display: inline-block;
+  vertical-align: top;
+}
 #board {
   z-index: 1;
-}
-#controlPanel {
-  width: 200px;
-  display: inline-block;
-  border: 1px solid black;
-  padding: 20px;
+  /*transition: all 0.5s ease; // fadeout / fade in*/
 }
 .disableBoard {
   z-index: 5px;

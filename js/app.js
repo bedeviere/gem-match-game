@@ -125,7 +125,11 @@ game = {
           this.updateGridDisplay();
         }
         else {
-          // e.className+=" animated shake";
+          e.className+=" animated shake";
+          setTimeout(function(){
+            $('li').removeClass('animated').removeClass('shake');
+          },1000);
+          $('li').removeClass('selected');
         }
       } else if (this.currentLevel === 2){
         if (this.bIndex === this.aIndex + 4 || this.bIndex === this.aIndex -4 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
@@ -134,12 +138,14 @@ game = {
           this.updateGridDisplay();
         }
         else {
-          // e.className+=" animated shake";
-          // e.className-=" animated shake";
+          e.className+=" animated shake";
+          setTimeout(function(){
+            $('li').removeClass('animated').removeClass('shake');
+          },1000);
+          $('li').removeClass('selected');
         }
       }
       this.clickCounter = 0;
-      // setTimeout(e.className=this.bClass,5000);
     }
   },
   updateGridDisplay : function(){
@@ -264,7 +270,7 @@ game = {
     var newCol = [];
     var match = false;
 
-    rowsToCheck.forEach(function(currentRow, i){
+    rowsToCheck.forEach(function(currentRow, rowI){
       paircount = 0;
       for (var i = 0; i < numCols; i++){
         if (currentRow[i] === currentRow[i+1]){
@@ -286,6 +292,7 @@ game = {
             game.updateGridL2();
             game.time += 1;
             game.$scoreBoard.text(game.score);
+            // $('li#' + currentRow[i])
           }
           else if (paircount === 2){
 
@@ -568,7 +575,7 @@ game = {
     if (game.currentLevel === 1){
 
       // If reached points count, move to next level
-      if (game.score >= 200) {
+      if (game.score >= 20) {
         game.clearBoard();
         game.l1Score = game.score;
         game.init(2); // level 2
