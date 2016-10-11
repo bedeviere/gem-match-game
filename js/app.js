@@ -498,8 +498,6 @@ game = {
     } else {
       game.reCheckRow = false;
     }
-
-    // self.grid = self.grid;
   },
   checkColsForWinL1: function(){
     // After rows have been checked, time to check the colums for matches!
@@ -695,11 +693,11 @@ game = {
       }
     } else if (game.currentLevel === 2){
       game.checkRowsForWinL2();
-      progress = ((game.score/500)*100);
+      progress = ((game.score/600)*100);
       $('.progressBar').width(progress+'%');
       game.updateGridL2();
       game.checkColsForWinL2();
-      progress = ((game.score/500)*100);
+      progress = ((game.score/600)*100);
       $('.progressBar').width(progress+'%');
       game.updateGridL2();
     }
