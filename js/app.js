@@ -100,7 +100,7 @@ game = {
   },
   playSound: function(soundEffect){
     var $sound = $('#sound');
-    $sound[0].src="../media/audio/invalid.mp3";
+    $sound[0].src='../media/audio/'+soundEffect+'.mp3';
     $sound[0].play();
   },
   updateClickCounter: function(e){
@@ -132,11 +132,12 @@ game = {
       if (this.currentLevel === 1){
         if (this.bIndex === this.aIndex + 3 || this.bIndex === this.aIndex -3 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
         {
-          this.playSound('invalid');
+          // this.playSound('valid');
           this.updateGridDisplay();
         }
         else {
           e.className+=" animated shake";
+            this.playSound('invalid');
           setTimeout(function(){
             $('li').removeClass('animated').removeClass('shake');
           },1000);
@@ -145,11 +146,12 @@ game = {
       } else if (this.currentLevel === 2){
         if (this.bIndex === this.aIndex + 4 || this.bIndex === this.aIndex -4 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
         {
-          this.playSound('invalid');
+          // this.playSound('valid');
           this.updateGridDisplay();
         }
         else {
           e.className+=" animated shake";
+            this.playSound('invalid');
           setTimeout(function(){
             $('li').removeClass('animated').removeClass('shake');
           },1000);
@@ -233,6 +235,7 @@ game = {
     $(str2).addClass('animated zoomOut');
     $(str3).addClass('animated zoomOut');
     $(str4).addClass('animated zoomOut');
+    this.playSound('valid');
 
     setTimeout(function(){
       $(str1).removeClass('animated zoomOut');

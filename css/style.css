@@ -54,7 +54,7 @@ p {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -45%);
+  transform: translate(-50%, -37%);
   font-size: 400px;
   text-align: center;
   z-index: -1;
@@ -72,11 +72,17 @@ p {
   background-color: rgba(0,0,0,0.4);
   padding: 5px;
   margin: 50px auto;
+  border-radius: 6px;
 }
 .progressBar {
   background-color: #58B3FD;
   width: 0%;
-  height: 10px;
+  height: 15px;
+  border-radius: 4px;
+  background: -webkit-linear-gradient(#008AFA, #08DBFB, #008AFA); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#008AFA, #08DBFB, #008AFA); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#008AFA, #08DBFB, #008AFA); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#008AFA, #08DBFB, #008AFA); /* Standard syntax (must be last) */
 }
 #board {
   z-index: 1;
@@ -100,7 +106,7 @@ p {
   width: 360px;
   border-radius: 10px;
   padding: 20px;
-  margin: -10px auto;
+  margin: 40px auto;
 }
 #dials {
   margin-left: 65px;
@@ -129,8 +135,12 @@ p {
   display: inline-block;
   position: relative;
 }
+.topScores {
+  margin-top: 30px;
+}
 #highScores {
   text-align: center;
+  font-size: 30px;
 }
 .level {
   position: absolute;
@@ -192,14 +202,14 @@ ul li {
   background-size: cover;
 }
 /*.green {
-  background-image: url('../media/img/element_green_diamond_glossy.png');
-  background-repeat: no-repeat;
-  background-size: cover;
+background-image: url('../media/img/element_green_diamond_glossy.png');
+background-repeat: no-repeat;
+background-size: cover;
 }
 .grey {
-  background-image: url('../media/img/element_grey_diamond_glossy.png');
-  background-repeat: no-repeat;
-  background-size: cover;
+background-image: url('../media/img/element_grey_diamond_glossy.png');
+background-repeat: no-repeat;
+background-size: cover;
 }*/
 .selected {
   opacity: 0.2;
