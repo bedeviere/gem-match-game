@@ -249,8 +249,64 @@ game = {
       $(str4).removeClass('animated zoomOut');
     },500);
   },
-  animateOutCol: function(colI,col1,col2,col3,col4){
+  animateOutCol: function(colI,row1,row2,row3,row4){
+    var str1 = "";
+    var str2 = "";
+    var str3 = "";
+    var str4 = "";
 
+    if (game.currentLevel === 2){
+      if (colI === 0) {
+        row1==="" ? str1="": str1 = "li#" + row1;
+        str2 = "li#" + (row2+3);
+        str3 = "li#" + (row3+6);
+        row4==="" ? str4="": str4 = "li#" + (row4+9);
+      } else if(colI === 1){
+        row1==="" ? str1="": str1 = "li#" + (row1+1);
+        str2 = "li#" + (row2+4);
+        str3 = "li#" + (row3+7);
+        row4==="" ? str4="": str4 = "li#" + (row4+10);
+      } else if (colI === 2){
+        row1==="" ? str1="": str1 = "li#" + (row1+2);
+        str2 = "li#" + (row2+5);
+        str3 = "li#" + (row3+8);
+        row4==="" ? str4="": str4 = "li#" + (row4+11);
+      } else if (colI === 3){
+        row1==="" ? str1="": str1 = "li#" + (row1+3);
+        str2 = "li#" + (row2+6);
+        str3 = "li#" + (row3+9);
+        row4==="" ? str4="": str4 = "li#" + (row4+12);
+      }
+    } else if (game.currentLevel === 1){
+
+      if (colI === 0) {
+        str1 = "li#" + (row1-2);
+        str2 = "li#" + row2;
+        str3 = "li#" + (row3+2);
+      } else if(colI === 1){
+        str1 = "li#" + (row1-1);
+        str2 = "li#" + (row2+1);
+        str3 = "li#" + (row3+3);
+      } else if (colI === 2){
+        str1 = "li#" + (row1);
+        str2 = "li#" + (row2+2);
+        str3 = "li#" + (row3+4);
+      }
+    }
+
+
+    $(str1).addClass('animated zoomOut');
+    $(str2).addClass('animated zoomOut');
+    $(str3).addClass('animated zoomOut');
+    $(str4).addClass('animated zoomOut');
+    this.playSound('valid');
+
+    setTimeout(function(){
+      $(str1).removeClass('animated zoomOut');
+      $(str2).removeClass('animated zoomOut');
+      $(str3).removeClass('animated zoomOut');
+      $(str4).removeClass('animated zoomOut');
+    },500);
   },
   checkRowsForWinL1: function() {
     var numRows= 0;
@@ -511,7 +567,7 @@ game = {
     var newCol = [];
     var colors = ["yellow","blue","red"];
 
-    colsToCheck.forEach(function(currentCol, i){
+    colsToCheck.forEach(function(currentCol, colI){
       paircount = 0;
       for (var i = 0; i < numRows; i++){
         if (currentCol[i] === currentCol[i+1]){
@@ -539,6 +595,7 @@ game = {
           self.b = newCol[1];
           self.c = newCol[2];
           gridTemp.push(self.a,self.b,self.c);
+          game.animateOutCol(colI,i-1,i,i+1);
 
           // Need to re-check the rows once the columns have been updated
           game.reCheckRow = true;
@@ -573,7 +630,7 @@ game = {
     var match = false;
     this.checkCols = false;
 
-    colsToCheck.forEach(function(currentCol, i){
+    colsToCheck.forEach(function(currentCol, colI){
       paircount = 0;
       for (var i = 0; i < numRows; i++){
         if (currentCol[i] === currentCol[i+1]){
@@ -588,6 +645,8 @@ game = {
             c = game.randCol();
             d = game.randCol();
             gridTemp.push(a,b,c,d);
+
+            game.animateOutCol(colI,i-2,i-1,i,i+1);
 
             // Update score and scoreboard
             match = true;
@@ -604,6 +663,7 @@ game = {
               b = game.randCol();
               c = game.randCol();
               gridTemp.push(a,b,c,currentCol[i-2]);
+              game.animateOutCol(colI,"",i-1,i,i+1);
 
               match = true;
               game.score += 10;
@@ -613,6 +673,7 @@ game = {
               b = game.randCol();
               c = game.randCol();
               gridTemp.push(a,b,c,currentCol[i+1]);
+              game.animateOutCol(colI,i-2,i-1,i,"");
 
               match = true;
               game.score += 10;
@@ -662,7 +723,7 @@ game = {
     if (game.currentLevel === 1){
 
       // If reached points count, move to next level
-      if (game.score >= 200) {
+      if (game.score >= 100) {
         $('.levelUp').show().addClass('animated bounceIn');
         setTimeout(function(){
           $('.levelUp').addClass('animated zoomOut');
