@@ -723,7 +723,7 @@ game = {
     if (game.currentLevel === 1){
 
       // If reached points count, move to next level
-      if (game.score >= 100) {
+      if (game.score >= 200) {
         $('.levelUp').show().addClass('animated bounceIn');
         setTimeout(function(){
           $('.levelUp').addClass('animated zoomOut');
