@@ -135,33 +135,17 @@ game = {
       this.bIndex = this.cellIndex;
       this.b = e;
 
-      // check valid selection
-      if (this.currentLevel === 1){
-        if (this.bIndex === this.aIndex + 3 || this.bIndex === this.aIndex -3 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
-        {
-          this.updateGridDisplay();
-        }
-        else {
-          e.className+=" animated shake";
-          this.playSound('invalid');
-          setTimeout(function(){
-            $('li').removeClass('animated').removeClass('shake');
-          },1000);
-          $('li').removeClass('selected');
-        }
-      } else if (this.currentLevel === 2){
-        if (this.bIndex === this.aIndex + 4 || this.bIndex === this.aIndex -4 || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1)
-        {
-          this.updateGridDisplay();
-        }
-        else {
-          e.className+=" animated shake";
-          this.playSound('invalid');
-          setTimeout(function(){
-            $('li').removeClass('animated').removeClass('shake');
-          },1000);
-          $('li').removeClass('selected');
-        }
+      // Check valid move
+      if (this.bIndex === this.aIndex + (Math.sqrt(this.numCells)) || this.bIndex === this.aIndex - (Math.sqrt(this.numCells)) || this.bIndex === this.aIndex-1 || this.bIndex === this.aIndex + 1) {
+        this.updateGridDisplay();
+      }
+      else {
+        e.className+=" animated shake";
+        this.playSound('invalid');
+        setTimeout(function(){
+          $('li').removeClass('animated').removeClass('shake');
+        },1000);
+        $('li').removeClass('selected');
       }
       this.clickCounter = 0;
     }
