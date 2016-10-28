@@ -4,7 +4,7 @@
 ### Overview
 This game is a variation of the popular game Bejeweled; an addictive gem-matching puzzle game. 
 
-You can play the game [here] (https://intense-headland-37805.herokuapp.com/).
+You can play the game [here] (https://gem-match.herokuapp.com/).
 
 --
 ### Screenshot
