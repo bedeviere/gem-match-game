@@ -43,5 +43,4 @@ Built as an individual project after 2 weeks of studying web development, the ob
 * Optimise the game for mobile devices.
 
 ### Known Bugs/Issues
-* No sound effect when gems are removed from column.
 * Board visualisation doesn't show until all columns have been checked for a match.
