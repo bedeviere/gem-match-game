@@ -9,7 +9,7 @@ You can play the game [here] (https://gem-match.herokuapp.com/).
 --
 ### Screenshot
 
-![] (https://intense-headland-37805.herokuapp.com/media/img/screenshot.jpeg)
+![] (https://gem-match.herokuapp.com/media/img/screenshot.jpeg)
 
 --
 
