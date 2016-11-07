@@ -1,4 +1,4 @@
-# WDI Project #1: Gem-Matching Puzzle
+# Gem-Match Game
 
 
 ### Overview
