@@ -1,8 +1,8 @@
-# WDI Project #1: Gem-Matching Puzzle
+# Gem Match
 
 
 ### Overview
-Gem match is a one-player game based on the popular Bejewelled. Users match rows and columns of gems within a time limit to boost their points score and progress to the next level.
+Gem Match is a one-player game based on the popular Bejewelled. Users match rows and columns of gems within a time limit to boost their points score and progress to the next level.
 
 
 You can play the game [here] (https://gem-match.herokuapp.com/).
@@ -10,7 +10,7 @@ You can play the game [here] (https://gem-match.herokuapp.com/).
 --
 ### Screenshot
 
-![] (https://gem-match.herokuapp.com/media/img/screenshot.jpeg)
+![Gem Match](https://gem-match.herokuapp.com/media/img/gem-match.png)
 
 --
 
